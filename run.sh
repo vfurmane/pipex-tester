@@ -86,7 +86,7 @@ printf "\t${BOLD}Tests${NC}\n\n"
 
 # TEST 01
 num="01"
-description="The project compiles"
+description="The program compiles"
 printf "${BLUE}# $num: %-69s  []${NC}" "$description"
 make -C "$PROJECT_DIRECTORY" > /dev/null 2>&1
 if [ $? -eq 0 ]
@@ -101,9 +101,69 @@ printf "\r${result_color}# 01: %-69s [%s]\n${NC}" "$description" "$result"
 
 # TEST 02
 num="02"
-description="The project is executable as ./pipex"
+description="The program is executable as ./pipex"
 printf "${BLUE}# $num: %-69s  []${NC}" "$description"
 if [ -x $PROJECT_DIRECTORY/pipex ]
+then
+	result="OK"
+	result_color=$GREEN
+else
+	result="KO"
+	result_color=$RED
+fi
+printf "\r${result_color}# 02: %-69s [%s]\n${NC}" "$description" "$result"
+
+# TEST 03
+num="03"
+description="The program do not crash with no parameters"
+printf "${BLUE}# $num: %-69s  []${NC}" "$description"
+$PROJECT_DIRECTORY/pipex
+if [ $? -lt 126 ] # 126 is the lowest code that bash uses for errors
+then
+	result="OK"
+	result_color=$GREEN
+else
+	result="KO"
+	result_color=$RED
+fi
+printf "\r${result_color}# 02: %-69s [%s]\n${NC}" "$description" "$result"
+
+# TEST 04
+num="04"
+description="The program do not crash with one parameter"
+printf "${BLUE}# $num: %-69s  []${NC}" "$description"
+$PROJECT_DIRECTORY/pipex "texts/deepthought.txt"
+if [ $? -lt 126 ] # 126 is the lowest code that bash uses for errors
+then
+	result="OK"
+	result_color=$GREEN
+else
+	result="KO"
+	result_color=$RED
+fi
+printf "\r${result_color}# 02: %-69s [%s]\n${NC}" "$description" "$result"
+
+# TEST 05
+num="05"
+description="The program do not crash with two parameters"
+printf "${BLUE}# $num: %-69s  []${NC}" "$description"
+$PROJECT_DIRECTORY/pipex "texts/deepthought.txt" "grep a1"
+if [ $? -lt 126 ] # 126 is the lowest code that bash uses for errors
+then
+	result="OK"
+	result_color=$GREEN
+else
+	result="KO"
+	result_color=$RED
+fi
+printf "\r${result_color}# 02: %-69s [%s]\n${NC}" "$description" "$result"
+
+# TEST 06
+num="06"
+description="The program do not crash with 3 parameters"
+printf "${BLUE}# $num: %-69s  []${NC}" "$description"
+$PROJECT_DIRECTORY/pipex "texts/deepthought.txt" "grep a1" "wc -w"
+if [ $? -lt 126 ] # 126 is the lowest code that bash uses for errors
 then
 	result="OK"
 	result_color=$GREEN
