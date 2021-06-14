@@ -118,7 +118,7 @@ printf "\r${result_color}# $num: %-69s [%s]\n${NC}" "$description" "$result"
 num="03"
 description="The program do not crash with no parameters"
 printf "${BLUE}# $num: %-69s  []${NC}" "$description"
-$PROJECT_DIRECTORY/pipex
+$PROJECT_DIRECTORY/pipex > /dev/null 2>&1
 if [ $? -lt 126 ] # 126 is the lowest code that bash uses for errors
 then
 	result="OK"
@@ -133,7 +133,7 @@ printf "\r${result_color}# $num: %-69s [%s]\n${NC}" "$description" "$result"
 num="04"
 description="The program do not crash with one parameter"
 printf "${BLUE}# $num: %-69s  []${NC}" "$description"
-$PROJECT_DIRECTORY/pipex "texts/deepthought.txt"
+$PROJECT_DIRECTORY/pipex "texts/deepthought.txt" > /dev/null 2>&1
 if [ $? -lt 126 ] # 126 is the lowest code that bash uses for errors
 then
 	result="OK"
@@ -148,7 +148,7 @@ printf "\r${result_color}# $num: %-69s [%s]\n${NC}" "$description" "$result"
 num="05"
 description="The program do not crash with two parameters"
 printf "${BLUE}# $num: %-69s  []${NC}" "$description"
-$PROJECT_DIRECTORY/pipex "texts/deepthought.txt" "grep Now"
+$PROJECT_DIRECTORY/pipex "texts/deepthought.txt" "grep Now" > /dev/null 2>&1
 if [ $? -lt 126 ] # 126 is the lowest code that bash uses for errors
 then
 	result="OK"
@@ -163,7 +163,7 @@ printf "\r${result_color}# $num: %-69s [%s]\n${NC}" "$description" "$result"
 num="06"
 description="The program do not crash with 3 parameters"
 printf "${BLUE}# $num: %-69s  []${NC}" "$description"
-$PROJECT_DIRECTORY/pipex "texts/deepthought.txt" "grep Now" "wc -w"
+$PROJECT_DIRECTORY/pipex "texts/deepthought.txt" "grep Now" "wc -w" > /dev/null 2>&1
 if [ $? -lt 126 ] # 126 is the lowest code that bash uses for errors
 then
 	result="OK"
@@ -178,7 +178,7 @@ printf "\r${result_color}# $num: %-69s [%s]\n${NC}" "$description" "$result"
 num="07"
 description="The program handles a basic command"
 printf "${BLUE}# $num: %-69s  []${NC}" "$description"
-$PROJECT_DIRECTORY/pipex "texts/deepthought.txt" "grep Now" "wc -w" "outs/test-07.txt"
+$PROJECT_DIRECTORY/pipex "texts/deepthought.txt" "grep Now" "wc -w" "outs/test-07.txt" > /dev/null 2>&1
 if [ $? -eq 0 ]
 then
 	result="OK"
