@@ -80,6 +80,7 @@ then
 fi
 
 . config.vars
+mkdir outs
 
 printf "\n"
 printf "\t${BOLD}Tests${NC}\n\n"
@@ -97,7 +98,7 @@ else
 	result="KO"
 	result_color=$RED
 fi
-printf "\r${result_color}# 01: %-69s [%s]\n${NC}" "$description" "$result"
+printf "\r${result_color}# $num: %-69s [%s]\n${NC}" "$description" "$result"
 
 # TEST 02
 num="02"
@@ -111,7 +112,7 @@ else
 	result="KO"
 	result_color=$RED
 fi
-printf "\r${result_color}# 02: %-69s [%s]\n${NC}" "$description" "$result"
+printf "\r${result_color}# $num: %-69s [%s]\n${NC}" "$description" "$result"
 
 # TEST 03
 num="03"
@@ -126,7 +127,7 @@ else
 	result="KO"
 	result_color=$RED
 fi
-printf "\r${result_color}# 02: %-69s [%s]\n${NC}" "$description" "$result"
+printf "\r${result_color}# $num: %-69s [%s]\n${NC}" "$description" "$result"
 
 # TEST 04
 num="04"
@@ -141,13 +142,13 @@ else
 	result="KO"
 	result_color=$RED
 fi
-printf "\r${result_color}# 02: %-69s [%s]\n${NC}" "$description" "$result"
+printf "\r${result_color}# $num: %-69s [%s]\n${NC}" "$description" "$result"
 
 # TEST 05
 num="05"
 description="The program do not crash with two parameters"
 printf "${BLUE}# $num: %-69s  []${NC}" "$description"
-$PROJECT_DIRECTORY/pipex "texts/deepthought.txt" "grep a1"
+$PROJECT_DIRECTORY/pipex "texts/deepthought.txt" "grep Now"
 if [ $? -lt 126 ] # 126 is the lowest code that bash uses for errors
 then
 	result="OK"
@@ -156,13 +157,13 @@ else
 	result="KO"
 	result_color=$RED
 fi
-printf "\r${result_color}# 02: %-69s [%s]\n${NC}" "$description" "$result"
+printf "\r${result_color}# $num: %-69s [%s]\n${NC}" "$description" "$result"
 
 # TEST 06
 num="06"
 description="The program do not crash with 3 parameters"
 printf "${BLUE}# $num: %-69s  []${NC}" "$description"
-$PROJECT_DIRECTORY/pipex "texts/deepthought.txt" "grep a1" "wc -w"
+$PROJECT_DIRECTORY/pipex "texts/deepthought.txt" "grep Now" "wc -w"
 if [ $? -lt 126 ] # 126 is the lowest code that bash uses for errors
 then
 	result="OK"
@@ -171,4 +172,37 @@ else
 	result="KO"
 	result_color=$RED
 fi
-printf "\r${result_color}# 02: %-69s [%s]\n${NC}" "$description" "$result"
+printf "\r${result_color}# $num: %-69s [%s]\n${NC}" "$description" "$result"
+
+# TEST 07
+num="07"
+description="The program handles a basic command"
+printf "${BLUE}# $num: %-69s  []${NC}" "$description"
+$PROJECT_DIRECTORY/pipex "texts/deepthought.txt" "grep Now" "wc -w" "outs/test-07.txt"
+if [ $? -eq 0 ]
+then
+	result="OK"
+	result_color=$GREEN
+else
+	result="KO"
+	result_color=$RED
+fi
+printf "\r${result_color}# $num: %-69s [%s]\n${NC}" "$description" "$result"
+
+# TEST 08
+num="08"
+description="The output of the basic command is correct"
+printf "${BLUE}# $num: %-69s  []${NC}" "$description"
+$PROJECT_DIRECTORY/pipex "texts/deepthought.txt" "grep Now" "wc -w" "outs/test-08.txt" > /dev/null 2>&1
+< texts/deepthought.txt grep a1 | wc -w > outs/test-08-original.txt > /dev/null 2>&1
+if diff outs/test-08-original.txt outs/test-08.txt > /dev/null 2>&1
+then
+	result="OK"
+	result_color=$GREEN
+else
+	result="KO"
+	result_color=$RED
+fi
+printf "\r${result_color}# $num: %-69s [%s]\n${NC}" "$description" "$result"
+
+rm -r outs
