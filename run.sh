@@ -457,3 +457,35 @@ else
 	result_color=$RED
 fi
 printf "\r${result_color}# $num: %-69s [%s]\n${NC}" "$description" "$result"
+
+# **************************************************************************** #
+
+printf "\n${ULINE}The next tests will use the following command:${NC}\n"
+printf "$PROJECT_DIRECTORY/pipex \"/dev/urandom\" \"cat\" \"head -1\" \"outs/test-xx.txt\"\n\n"
+
+# TEST 23
+num="23"
+description="The program does not timeout"
+printf "${BLUE}# $num: %-69s  []${NC}" "$description"
+$PROJECT_DIRECTORY/pipex "/dev/urandom" "cat" "head -1" "outs/test-23.txt" > outs/test-23-tty.txt 2>&1 &
+i=0
+bg_process=$!
+while kill -0 $bg_process > /dev/null 2>&1
+do
+	if [ $i -eq 5 ]
+	then
+		kill $bg_process
+		break
+	fi
+	sleep 1
+	i=$(($i + 1))
+done
+if [ $i -lt 5 ]
+then
+	result="OK"
+	result_color=$GREEN
+else
+	result="OK"
+	result_color=$RED
+fi
+printf "\r${result_color}# $num: %-69s [%s]\n${NC}" "$description" "$result"
