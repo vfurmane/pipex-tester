@@ -322,3 +322,107 @@ else
 	result_color=$RED
 fi
 printf "\r${result_color}# $num: %-69s [%s]\n${NC}" "$description" "$result"
+
+# **************************************************************************** #
+
+printf "\n${ULINE}The next tests will use the following command:${NC}\n"
+printf "$PROJECT_DIRECTORY/pipex \"texts/deepthought.txt\" \"notexisting\" \"wc\" \"outs/test-xx.txt\"\n"
+printf "${ULINE}(notexisting is a command that is not supposed to exist)${NC}\n\n"
+
+# TEST 15
+num="15"
+description="The program handles the command"
+printf "${BLUE}# $num: %-69s  []${NC}" "$description"
+$PROJECT_DIRECTORY/pipex "texts/deepthought.txt" "notexisting" "wc" "outs/test-15.txt" > outs/test-15-tty.txt 2>&1
+if [ $? -eq 0 ]
+then
+	result="OK"
+	result_color=$GREEN
+else
+	result="KO"
+	result_color=$RED
+fi
+printf "\r${result_color}# $num: %-69s [%s]\n${NC}" "$description" "$result"
+
+# TEST 16
+num="16"
+description="The output of the command contains 'command not found'"
+printf "${BLUE}# $num: %-69s  []${NC}" "$description"
+$PROJECT_DIRECTORY/pipex "texts/deepthought.txt" "notexisting" "wc" "outs/test-16.txt" > outs/test-16-tty.txt 2>&1
+if grep "command not found" outs/test-16-tty.txt > /dev/null 2>&1
+then
+	result="OK"
+	result_color=$GREEN
+else
+	result="KO"
+	result_color=$RED
+fi
+printf "\r${result_color}# $num: %-69s [%s]\n${NC}" "$description" "$result"
+
+# TEST 17
+num="17"
+description="The output of the command is correct"
+printf "${BLUE}# $num: %-69s  []${NC}" "$description"
+$PROJECT_DIRECTORY/pipex "texts/deepthought.txt" "notexisting" "wc" "outs/test-17.txt" > outs/test-17-tty.txt 2>&1
+< /dev/null cat | wc > outs/test-17-original.txt 2>&1
+if diff outs/test-17-original.txt outs/test-17.txt > /dev/null 2>&1
+then
+	result="OK"
+	result_color=$GREEN
+else
+	result="KO"
+	result_color=$RED
+fi
+printf "\r${result_color}# $num: %-69s [%s]\n${NC}" "$description" "$result"
+
+# **************************************************************************** #
+
+printf "\n${ULINE}The next tests will use the following command:${NC}\n"
+printf "$PROJECT_DIRECTORY/pipex \"texts/deepthought.txt\" \"cat\" \"notexisting\" \"outs/test-xx.txt\"\n"
+printf "${ULINE}(notexisting is a command that is not supposed to exist)${NC}\n\n"
+
+# TEST 18
+num="18"
+description="The program exits with the right status code"
+printf "${BLUE}# $num: %-69s  []${NC}" "$description"
+$PROJECT_DIRECTORY/pipex "texts/deepthought.txt" "cat" "notexisting" "outs/test-18.txt" > outs/test-18-tty.txt 2>&1
+if [ $? -eq 127 ]
+then
+	result="OK"
+	result_color=$GREEN
+else
+	result="KO"
+	result_color=$RED
+fi
+printf "\r${result_color}# $num: %-69s [%s]\n${NC}" "$description" "$result"
+
+# TEST 19
+num="19"
+description="The output of the command contains 'command not found'"
+printf "${BLUE}# $num: %-69s  []${NC}" "$description"
+$PROJECT_DIRECTORY/pipex "texts/deepthought.txt" "cat" "notexisting" "outs/test-19.txt" > outs/test-19-tty.txt 2>&1
+if grep "command not found" outs/test-19-tty.txt > /dev/null 2>&1
+then
+	result="OK"
+	result_color=$GREEN
+else
+	result="KO"
+	result_color=$RED
+fi
+printf "\r${result_color}# $num: %-69s [%s]\n${NC}" "$description" "$result"
+
+# TEST 20
+num="20"
+description="The output of the command is correct"
+printf "${BLUE}# $num: %-69s  []${NC}" "$description"
+$PROJECT_DIRECTORY/pipex "texts/deepthought.txt" "cat" "notexisting" "outs/test-20.txt" > outs/test-20-tty.txt 2>&1
+< texts/deepthought.txt cat | cat /dev/null > outs/test-20-original.txt 2>&1
+if diff outs/test-20-original.txt outs/test-20.txt > /dev/null 2>&1
+then
+	result="OK"
+	result_color=$GREEN
+else
+	result="KO"
+	result_color=$RED
+fi
+printf "\r${result_color}# $num: %-69s [%s]\n${NC}" "$description" "$result"
