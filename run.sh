@@ -272,11 +272,11 @@ printf "\r${result_color}# $num: %-69s [%s]\n${NC}" "$description" "$result"
 printf "\n${ULINE}The next tests will use the following command:${NC}\n"
 printf "$PROJECT_DIRECTORY/pipex \"assets/deepthought.txt\" \"cat\" \"ls\" \"outs/test-xx.txt\"\n\n"
 
-# TEST 09
-num="09"
+# TEST 12
+num="12"
 description="The program handles the command"
 printf "${BLUE}# $num: %-69s  []${NC}" "$description"
-$PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "cat" "ls" "outs/test-09.txt" > outs/test-09-tty.txt 2>&1
+$PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "cat" "ls" "outs/test-12.txt" > outs/test-12-tty.txt 2>&1
 if [ $? -eq 0 ]
 then
 	result="OK"
@@ -287,13 +287,13 @@ else
 fi
 printf "\r${result_color}# $num: %-69s [%s]\n${NC}" "$description" "$result"
 
-# TEST 10
-num="10"
+# TEST 13
+num="13"
 description="The output of the command is correct"
 printf "${BLUE}# $num: %-69s  []${NC}" "$description"
-$PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "cat" "ls" "outs/test-10.txt" > outs/test-10-tty.txt 2>&1
-< assets/deepthought.txt cat | ls > outs/test-10-original.txt 2>&1
-if diff outs/test-10-original.txt outs/test-10.txt > /dev/null 2>&1
+$PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "cat" "ls" "outs/test-13.txt" > outs/test-13-tty.txt 2>&1
+< assets/deepthought.txt cat | ls > outs/test-13-original.txt 2>&1
+if diff outs/test-13-original.txt outs/test-13.txt > /dev/null 2>&1
 then
 	result="OK"
 	result_color=$GREEN
@@ -308,11 +308,11 @@ printf "\r${result_color}# $num: %-69s [%s]\n${NC}" "$description" "$result"
 printf "\n${ULINE}The next tests will use the following command:${NC}\n"
 printf "$PROJECT_DIRECTORY/pipex \"assets/deepthought.txt\" \"grep Now\" \"head -2\" \"outs/test-xx.txt\"\n\n"
 
-# TEST 11
-num="11"
+# TEST 14
+num="14"
 description="The program handles the command"
 printf "${BLUE}# $num: %-69s  []${NC}" "$description"
-$PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "grep Now" "head -2" "outs/test-11.txt" > outs/test-11-tty.txt 2>&1
+$PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "grep Now" "head -2" "outs/test-14.txt" > outs/test-14-tty.txt 2>&1
 if [ $? -eq 0 ]
 then
 	result="OK"
@@ -323,13 +323,13 @@ else
 fi
 printf "\r${result_color}# $num: %-69s [%s]\n${NC}" "$description" "$result"
 
-# TEST 12
-num="12"
+# TEST 15
+num="15"
 description="The output of the command is correct"
 printf "${BLUE}# $num: %-69s  []${NC}" "$description"
-$PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "grep Now" "head -2" "outs/test-12.txt" > outs/test-12-tty.txt 2>&1
-< assets/deepthought.txt grep Now | head -2 > outs/test-12-original.txt 2>&1
-if diff outs/test-12-original.txt outs/test-12.txt > /dev/null 2>&1
+$PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "grep Now" "head -2" "outs/test-15.txt" > outs/test-15-tty.txt 2>&1
+< assets/deepthought.txt grep Now | head -2 > outs/test-15-original.txt 2>&1
+if diff outs/test-15-original.txt outs/test-15.txt > /dev/null 2>&1
 then
 	result="OK"
 	result_color=$GREEN
@@ -344,11 +344,11 @@ printf "\r${result_color}# $num: %-69s [%s]\n${NC}" "$description" "$result"
 printf "\n${ULINE}The next tests will use the following command:${NC}\n"
 printf "$PROJECT_DIRECTORY/pipex \"assets/deepthought.txt\" \"grep Now\" \"wc -w\" \"outs/test-xx.txt\"\n\n"
 
-# TEST 13
-num="13"
+# TEST 16
+num="16"
 description="The program handles the command"
 printf "${BLUE}# $num: %-69s  []${NC}" "$description"
-$PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "grep Now" "wc -w" "outs/test-13.txt" > outs/test-13-tty.txt 2>&1
+$PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "grep Now" "wc -w" "outs/test-16.txt" > outs/test-16-tty.txt 2>&1
 if [ $? -eq 0 ]
 then
 	result="OK"
@@ -359,13 +359,13 @@ else
 fi
 printf "\r${result_color}# $num: %-69s [%s]\n${NC}" "$description" "$result"
 
-# TEST 14
-num="14"
+# TEST 17
+num="17"
 description="The output of the command is correct"
 printf "${BLUE}# $num: %-69s  []${NC}" "$description"
-$PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "grep Now" "wc -w" "outs/test-14.txt" > outs/test-14-tty.txt 2>&1
-< assets/deepthought.txt grep Now | wc -w > outs/test-14-original.txt 2>&1
-if diff outs/test-14-original.txt outs/test-14.txt > /dev/null 2>&1
+$PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "grep Now" "wc -w" "outs/test-17.txt" > outs/test-17-tty.txt 2>&1
+< assets/deepthought.txt grep Now | wc -w > outs/test-17-original.txt 2>&1
+if diff outs/test-17-original.txt outs/test-17.txt > /dev/null 2>&1
 then
 	result="OK"
 	result_color=$GREEN
@@ -382,12 +382,12 @@ printf "$PROJECT_DIRECTORY/pipex \"assets/deepthought.txt\" \"grep Now\" \"cat\"
 printf "${ULINE}then:${NC}\n"
 printf "$PROJECT_DIRECTORY/pipex \"assets/deepthought.txt\" \"wc -w\" \"cat\" \"outs/test-xx.txt\"\n\n"
 
-# TEST 15
-num="15"
+# TEST 18
+num="18"
 description="The program handles the command"
 printf "${BLUE}# $num: %-69s  []${NC}" "$description"
-$PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "grep Now" "cat" "outs/test-15.txt" > outs/test-15.0-tty.txt 2>&1
-$PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "wc -w" "cat" "outs/test-15.txt" > outs/test-15.1-tty.txt 2>&1
+$PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "grep Now" "cat" "outs/test-18.txt" > outs/test-18.0-tty.txt 2>&1
+$PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "wc -w" "cat" "outs/test-18.txt" > outs/test-18.1-tty.txt 2>&1
 if [ $? -eq 0 ]
 then
 	result="OK"
@@ -398,15 +398,15 @@ else
 fi
 printf "\r${result_color}# $num: %-69s [%s]\n${NC}" "$description" "$result"
 
-# TEST 16
-num="16"
+# TEST 19
+num="19"
 description="The output of the command is correct"
 printf "${BLUE}# $num: %-69s  []${NC}" "$description"
-$PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "grep Now" "cat" "outs/test-16.txt" > outs/test-16.0-tty.txt 2>&1
-$PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "wc -w" "cat" "outs/test-16.txt" > outs/test-16.1-tty.txt 2>&1
-< assets/deepthought.txt grep Now | cat > outs/test-16-original.txt 2>&1
-< assets/deepthought.txt wc -w | cat > outs/test-16-original.txt 2>&1
-if diff outs/test-16-original.txt outs/test-16.txt > /dev/null 2>&1
+$PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "grep Now" "cat" "outs/test-19.txt" > outs/test-19.0-tty.txt 2>&1
+$PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "wc -w" "cat" "outs/test-19.txt" > outs/test-19.1-tty.txt 2>&1
+< assets/deepthought.txt grep Now | cat > outs/test-19-original.txt 2>&1
+< assets/deepthought.txt wc -w | cat > outs/test-19-original.txt 2>&1
+if diff outs/test-19-original.txt outs/test-19.txt > /dev/null 2>&1
 then
 	result="OK"
 	result_color=$GREEN
@@ -422,11 +422,11 @@ printf "\n${ULINE}The next tests will use the following command:${NC}\n"
 printf "$PROJECT_DIRECTORY/pipex \"assets/deepthought.txt\" \"notexisting\" \"wc\" \"outs/test-xx.txt\"\n"
 printf "${ULINE}(notexisting is a command that is not supposed to exist)${NC}\n\n"
 
-# TEST 17
-num="17"
+# TEST 20
+num="20"
 description="The program handles the command"
 printf "${BLUE}# $num: %-69s  []${NC}" "$description"
-$PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "notexisting" "wc" "outs/test-17.txt" > outs/test-17-tty.txt 2>&1
+$PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "notexisting" "wc" "outs/test-20.txt" > outs/test-20-tty.txt 2>&1
 if [ $? -eq 0 ]
 then
 	result="OK"
@@ -437,12 +437,12 @@ else
 fi
 printf "\r${result_color}# $num: %-69s [%s]\n${NC}" "$description" "$result"
 
-# TEST 18
-num="18"
+# TEST 21
+num="21"
 description="The output of the command contains 'command not found'"
 printf "${BLUE}# $num: %-69s  []${NC}" "$description"
-$PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "notexisting" "wc" "outs/test-18.txt" > outs/test-18-tty.txt 2>&1
-if grep "command not found" outs/test-18-tty.txt > /dev/null 2>&1
+$PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "notexisting" "wc" "outs/test-21.txt" > outs/test-21-tty.txt 2>&1
+if grep "command not found" outs/test-21-tty.txt > /dev/null 2>&1
 then
 	result="OK"
 	result_color=$GREEN
@@ -452,13 +452,13 @@ else
 fi
 printf "\r${result_color}# $num: %-69s [%s]\n${NC}" "$description" "$result"
 
-# TEST 19
-num="19"
+# TEST 22
+num="22"
 description="The output of the command is correct"
 printf "${BLUE}# $num: %-69s  []${NC}" "$description"
-$PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "notexisting" "wc" "outs/test-19.txt" > outs/test-19-tty.txt 2>&1
-< /dev/null cat | wc > outs/test-19-original.txt 2>&1
-if diff outs/test-19-original.txt outs/test-19.txt > /dev/null 2>&1
+$PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "notexisting" "wc" "outs/test-22.txt" > outs/test-22-tty.txt 2>&1
+< /dev/null cat | wc > outs/test-22-original.txt 2>&1
+if diff outs/test-22-original.txt outs/test-22.txt > /dev/null 2>&1
 then
 	result="OK"
 	result_color=$GREEN
@@ -474,11 +474,11 @@ printf "\n${ULINE}The next tests will use the following command:${NC}\n"
 printf "$PROJECT_DIRECTORY/pipex \"assets/deepthought.txt\" \"cat\" \"notexisting\" \"outs/test-xx.txt\"\n"
 printf "${ULINE}(notexisting is a command that is not supposed to exist)${NC}\n\n"
 
-# TEST 20
-num="20"
+# TEST 23
+num="23"
 description="The program exits with the right status code"
 printf "${BLUE}# $num: %-69s  []${NC}" "$description"
-$PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "cat" "notexisting" "outs/test-20.txt" > outs/test-20-tty.txt 2>&1
+$PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "cat" "notexisting" "outs/test-23.txt" > outs/test-23-tty.txt 2>&1
 if [ $? -eq 127 ]
 then
 	result="OK"
@@ -489,12 +489,12 @@ else
 fi
 printf "\r${result_color}# $num: %-69s [%s]\n${NC}" "$description" "$result"
 
-# TEST 21
-num="21"
+# TEST 24
+num="24"
 description="The output of the command contains 'command not found'"
 printf "${BLUE}# $num: %-69s  []${NC}" "$description"
-$PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "cat" "notexisting" "outs/test-21.txt" > outs/test-21-tty.txt 2>&1
-if grep "command not found" outs/test-21-tty.txt > /dev/null 2>&1
+$PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "cat" "notexisting" "outs/test-24.txt" > outs/test-24-tty.txt 2>&1
+if grep "command not found" outs/test-24-tty.txt > /dev/null 2>&1
 then
 	result="OK"
 	result_color=$GREEN
@@ -504,13 +504,13 @@ else
 fi
 printf "\r${result_color}# $num: %-69s [%s]\n${NC}" "$description" "$result"
 
-# TEST 22
-num="22"
+# TEST 25
+num="25"
 description="The output of the command is correct"
 printf "${BLUE}# $num: %-69s  []${NC}" "$description"
-$PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "cat" "notexisting" "outs/test-22.txt" > outs/test-22-tty.txt 2>&1
-< assets/deepthought.txt cat | cat /dev/null > outs/test-22-original.txt 2>&1
-if diff outs/test-22-original.txt outs/test-22.txt > /dev/null 2>&1
+$PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "cat" "notexisting" "outs/test-25.txt" > outs/test-25-tty.txt 2>&1
+< assets/deepthought.txt cat | cat /dev/null > outs/test-25-original.txt 2>&1
+if diff outs/test-25-original.txt outs/test-25.txt > /dev/null 2>&1
 then
 	result="OK"
 	result_color=$GREEN
@@ -525,11 +525,11 @@ printf "\r${result_color}# $num: %-69s [%s]\n${NC}" "$description" "$result"
 printf "\n${ULINE}The next tests will use the following command:${NC}\n"
 printf "$PROJECT_DIRECTORY/pipex \"/dev/urandom\" \"cat\" \"head -1\" \"outs/test-xx.txt\"\n\n"
 
-# TEST 23
-num="23"
+# TEST 26
+num="26"
 description="The program does not timeout"
 printf "${BLUE}# $num: %-69s  []${NC}" "$description"
-$PROJECT_DIRECTORY/pipex "/dev/urandom" "cat" "head -1" "outs/test-23.txt" > outs/test-23-tty.txt 2>&1 &
+$PROJECT_DIRECTORY/pipex "/dev/urandom" "cat" "head -1" "outs/test-26.txt" > outs/test-26-tty.txt 2>&1 &
 i=0
 bg_process=$!
 while kill -0 $bg_process > /dev/null 2>&1
