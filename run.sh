@@ -191,10 +191,10 @@ printf "\r${result_color}# $num: %-69s [%s]\n${NC}" "$description" "$result"
 
 # TEST 08
 num="08"
-description="The program handles outilfe's open error"
+description="The program handles infile's open error"
 printf "${BLUE}# $num: %-69s  []${NC}" "$description"
-$PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "grep Now" "wc -w" "not-existing/test-08.txt" > outs/test-08-tty.txt 2>&1
-if [ $? -eq 1 ]
+$PROJECT_DIRECTORY/pipex "not-existing/deepthought.txt" "grep Now" "wc -w" "outs/test-08.txt.txt" > outs/test-08-tty.txt 2>&1
+if [ $? -eq 0 ]
 then
 	result="OK"
 	result_color=$GREEN
@@ -206,11 +206,11 @@ printf "\r${result_color}# $num: %-69s [%s]\n${NC}" "$description" "$result"
 
 # TEST 09
 num="09"
-description="The program handles execve errors"
+description="The output when infile's open error occur is correct"
 printf "${BLUE}# $num: %-69s  []${NC}" "$description"
-chmod 644 assets/deepthought.txt
-PATH=$PWD:$PATH $PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "cat" "./assets/not-executable" "outs/test-09.txt" > outs/test-09-tty.txt 2>&1
-if [ $? -ne 0 ]
+$PROJECT_DIRECTORY/pipex "not-existing/deepthought.txt" "grep Now" "wc -w" "outs/test-09.txt" > outs/test-09-tty.txt 2>&1
+< /dev/null grep Now | wc -w > outs/test-09-original.txt 2>&1
+if diff outs/test-09-original.txt outs/test-09.txt > /dev/null 2>&1
 then
 	result="OK"
 	result_color=$GREEN
@@ -221,6 +221,37 @@ fi
 printf "\r${result_color}# $num: %-69s [%s]\n${NC}" "$description" "$result"
 
 exit 0
+
+# TEST 10
+num="10"
+description="The program handles outfile's open error"
+printf "${BLUE}# $num: %-69s  []${NC}" "$description"
+$PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "grep Now" "wc -w" "not-existing/test-10.txt" > outs/test-10-tty.txt 2>&1
+if [ $? -eq 1 ]
+then
+	result="OK"
+	result_color=$GREEN
+else
+	result="KO"
+	result_color=$RED
+fi
+printf "\r${result_color}# $num: %-69s [%s]\n${NC}" "$description" "$result"
+
+# TEST 10
+num="10"
+description="The program handles execve errors"
+printf "${BLUE}# $num: %-69s  []${NC}" "$description"
+chmod 644 assets/deepthought.txt
+PATH=$PWD:$PATH $PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "cat" "./assets/not-executable" "outs/test-10.txt" > outs/test-10-tty.txt 2>&1
+if [ $? -ne 0 ]
+then
+	result="OK"
+	result_color=$GREEN
+else
+	result="KO"
+	result_color=$RED
+fi
+printf "\r${result_color}# $num: %-69s [%s]\n${NC}" "$description" "$result"
 
 # **************************************************************************** #
 
@@ -506,3 +537,5 @@ else
 	result_color=$RED
 fi
 printf "\r${result_color}# $num: %-69s [%s]\n${NC}" "$description" "$result"
+
+# grep -i leaks outs/test-*-tty.txt
