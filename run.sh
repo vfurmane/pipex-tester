@@ -220,8 +220,6 @@ else
 fi
 printf "\r${result_color}# $num: %-69s [%s]\n${NC}" "$description" "$result"
 
-exit 0
-
 # TEST 10
 num="10"
 description="The program handles outfile's open error"
@@ -244,6 +242,22 @@ printf "${BLUE}# $num: %-69s  []${NC}" "$description"
 chmod 644 assets/deepthought.txt
 PATH=$PWD:$PATH $PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "cat" "./assets/not-executable" "outs/test-10.txt" > outs/test-10-tty.txt 2>&1
 if [ $? -ne 0 ]
+then
+	result="OK"
+	result_color=$GREEN
+else
+	result="KO"
+	result_color=$RED
+fi
+printf "\r${result_color}# $num: %-69s [%s]\n${NC}" "$description" "$result"
+
+# TEST 11
+num="11"
+description="The program handles path that doesn't exist"
+printf "${BLUE}# $num: %-69s  []${NC}" "$description"
+PATH=/not/existing:$PATH $PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "grep Now" "wc -w" "outs/test-11.txt" > outs/test-11-tty.txt 2>&1
+status_code=$?
+if [ $status_code -eq 0 ]
 then
 	result="OK"
 	result_color=$GREEN
