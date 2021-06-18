@@ -552,4 +552,9 @@ else
 fi
 printf "\r${result_color}# $num: %-69s [%s]\n${NC}" "$description" "$result"
 
-# grep -i leaks outs/test-*-tty.txt
+if grep -i leak outs/test-*-tty.txt > /dev/null 2>&1
+then
+	printf "\n${RED}Leaks detected...${NC}\n"
+else
+	printf "\n${GREEN}No leak detected !${NC}\n"
+fi
