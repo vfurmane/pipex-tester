@@ -193,7 +193,7 @@ printf "\r${result_color}# $num: %-69s [%s]\n${NC}" "$description" "$result"
 num="08"
 description="The program handles infile's open error"
 printf "${BLUE}# $num: %-69s  []${NC}" "$description"
-$PROJECT_DIRECTORY/pipex "not-existing/deepthought.txt" "grep Now" "wc -w" "outs/test-08.txt.txt" > outs/test-08-tty.txt 2>&1
+$PROJECT_DIRECTORY/pipex "not-existing/deepthought.txt" "grep Now" "wc -w" "outs/test-08.txt" > outs/test-08-tty.txt 2>&1
 if [ $? -eq 0 ]
 then
 	result="OK"
@@ -387,8 +387,9 @@ num="19"
 description="The program handles the command"
 printf "${BLUE}# $num: %-69s  []${NC}" "$description"
 $PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "grep Now" "cat" "outs/test-19.txt" > outs/test-19.0-tty.txt 2>&1
+status_code=$?
 $PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "wc -w" "cat" "outs/test-19.txt" > outs/test-19.1-tty.txt 2>&1
-if [ $? -eq 0 ]
+if [ $status_code -eq 0 ] && [ $? -eq 0 ]
 then
 	result="OK"
 	result_color=$GREEN
@@ -404,8 +405,8 @@ description="The output of the command is correct"
 printf "${BLUE}# $num: %-69s  []${NC}" "$description"
 $PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "grep Now" "cat" "outs/test-20.txt" > outs/test-20.0-tty.txt 2>&1
 $PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "wc -w" "cat" "outs/test-20.txt" > outs/test-20.1-tty.txt 2>&1
-< assets/deepthought.txt grep Now | cat > outs/test-20-original.txt 2>&1
-< assets/deepthought.txt wc -w | cat > outs/test-20-original.txt 2>&1
+< assets/deepthought.txt grep Now | cat > outs/test-20-original.txt
+< assets/deepthought.txt wc -w | cat > outs/test-20-original.txt
 if diff outs/test-20-original.txt outs/test-20.txt > /dev/null 2>&1
 then
 	result="OK"
