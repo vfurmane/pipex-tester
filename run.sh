@@ -225,7 +225,7 @@ num="10"
 description="The program handles outfile's open error"
 printf "${BLUE}# $num: %-69s  []${NC}" "$description"
 $PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "grep Now" "wc -w" "not-existing/test-10.txt" > outs/test-10-tty.txt 2>&1
-if [ $? -eq 1 ]
+if [ $? -gt 0 ] && [ $? -lt 126 ] # 126 is the lowest code that bash uses for errors
 then
 	result="OK"
 	result_color=$GREEN
@@ -241,7 +241,7 @@ description="The program handles execve errors"
 printf "${BLUE}# $num: %-69s  []${NC}" "$description"
 chmod 644 assets/deepthought.txt
 PATH=$PWD:$PATH $PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "cat" "./assets/not-executable" "outs/test-11.txt" > outs/test-11-tty.txt 2>&1
-if [ $? -ne 0 ]
+if [ $? -gt 0 ] && [ $? -lt 126 ] # 126 is the lowest code that bash uses for errors
 then
 	result="OK"
 	result_color=$GREEN
