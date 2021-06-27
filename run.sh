@@ -27,6 +27,30 @@ fatal_error()
 	exit $exit_status
 }
 
+pipex_test()
+{
+	"$@" &
+	bg_process=$!
+	i=0
+	while kill -0 $bg_process > /dev/null 2>&1
+	do
+		if [ $i -eq 5 ]
+		then
+			kill $bg_process > /dev/null 2>&1
+			break
+		fi
+		sleep 1
+		i=$(($i + 1))
+	done
+	if [ $i -ge 5 ]
+	then
+		return 254 # arbitrary number for timeout error
+	fi
+	wait $bg_process
+	status_code=$?
+	return $status_code
+}
+
 cd "$(dirname "$0")"
 
 printf "+------------------------------------------------------------------------------+\n"
@@ -110,13 +134,19 @@ printf "\t${BOLD}Tests${NC}\n\n"
 num="01"
 description="The program compiles"
 printf "${BLUE}# $num: %-69s  []${NC}" "$description"
-make -C "$PROJECT_DIRECTORY" > outs/test-01.txt 2>&1
-if [ $? -eq 0 ]
+pipex_test make -C $PROJECT_DIRECTORY > outs/test-01.txt 2>&1
+status_code=$?
+if [ $status_code -eq 0 ]
 then
 	result="OK"
 	result_color=$GREEN
 else
-	result="KO"
+	if [ $status_code -eq 254 ]
+	then
+		result="TO"
+	else
+		result="KO"
+	fi
 	result_color=$RED
 fi
 printf "\r${result_color}# $num: %-69s [%s]\n${NC}" "$description" "$result"
@@ -139,7 +169,7 @@ printf "\r${result_color}# $num: %-69s [%s]\n${NC}" "$description" "$result"
 num="03"
 description="The program does not crash with no parameters"
 printf "${BLUE}# $num: %-69s  []${NC}" "$description"
-$PROJECT_DIRECTORY/pipex > outs/test-03-tty.txt 2>&1
+pipex_test $PROJECT_DIRECTORY/pipex > outs/test-03-tty.txt 2>&1
 status_code=$?
 if [ $status_code -le 128 ] # 128 is the last code that bash uses before signals
 then
@@ -151,7 +181,12 @@ then
 		result_color=$YELLOW
 	fi
 else
-	result="KO"
+	if [ $status_code -eq 254 ]
+	then
+		result="TO"
+	else
+		result="KO"
+	fi
 	result_color=$RED
 fi
 printf "\r${result_color}# $num: %-69s [%s]\n${NC}" "$description" "$result"
@@ -160,7 +195,7 @@ printf "\r${result_color}# $num: %-69s [%s]\n${NC}" "$description" "$result"
 num="04"
 description="The program does not crash with one parameter"
 printf "${BLUE}# $num: %-69s  []${NC}" "$description"
-$PROJECT_DIRECTORY/pipex "assets/deepthought.txt" > outs/test-04-tty.txt 2>&1
+pipex_test $PROJECT_DIRECTORY/pipex "assets/deepthought.txt" > outs/test-04-tty.txt 2>&1
 status_code=$?
 if [ $status_code -le 128 ] # 128 is the last code that bash uses before signals
 then
@@ -172,7 +207,12 @@ then
 		result_color=$YELLOW
 	fi
 else
-	result="KO"
+	if [ $status_code -eq 254 ]
+	then
+		result="TO"
+	else
+		result="KO"
+	fi
 	result_color=$RED
 fi
 printf "\r${result_color}# $num: %-69s [%s]\n${NC}" "$description" "$result"
@@ -181,7 +221,7 @@ printf "\r${result_color}# $num: %-69s [%s]\n${NC}" "$description" "$result"
 num="05"
 description="The program does not crash with two parameters"
 printf "${BLUE}# $num: %-69s  []${NC}" "$description"
-$PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "grep Now" > outs/test-05-tty.txt 2>&1
+pipex_test $PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "grep Now" > outs/test-05-tty.txt 2>&1
 status_code=$?
 if [ $status_code -le 128 ] # 128 is the last code that bash uses before signals
 then
@@ -193,7 +233,12 @@ then
 		result_color=$YELLOW
 	fi
 else
-	result="KO"
+	if [ $status_code -eq 254 ]
+	then
+		result="TO"
+	else
+		result="KO"
+	fi
 	result_color=$RED
 fi
 printf "\r${result_color}# $num: %-69s [%s]\n${NC}" "$description" "$result"
@@ -202,7 +247,7 @@ printf "\r${result_color}# $num: %-69s [%s]\n${NC}" "$description" "$result"
 num="06"
 description="The program does not crash with three parameters"
 printf "${BLUE}# $num: %-69s  []${NC}" "$description"
-$PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "grep Now" "wc -w" > outs/test-06-tty.txt 2>&1
+pipex_test $PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "grep Now" "wc -w" > outs/test-06-tty.txt 2>&1
 status_code=$?
 if [ $status_code -le 128 ] # 128 is the last code that bash uses before signals
 then
@@ -214,7 +259,12 @@ then
 		result_color=$YELLOW
 	fi
 else
-	result="KO"
+	if [ $status_code -eq 254 ]
+	then
+		result="TO"
+	else
+		result="KO"
+	fi
 	result_color=$RED
 fi
 printf "\r${result_color}# $num: %-69s [%s]\n${NC}" "$description" "$result"
@@ -223,14 +273,25 @@ printf "\r${result_color}# $num: %-69s [%s]\n${NC}" "$description" "$result"
 num="07"
 description="The program exits with the last command's status code"
 printf "${BLUE}# $num: %-69s  []${NC}" "$description"
-PATH=$PWD:$PATH $PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "grep Now" "./assets/exit.sh 5" "outs/test-07.txt" > outs/test-07-tty.txt 2>&1
-if [ $? -eq 5 ]
+PATH=$PWD:$PATH pipex_test $PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "grep Now" "./assets/exit.sh 5" "outs/test-07.txt" > outs/test-07-tty.txt 2>&1
+status_code=$?
+if [ $status_code -le 128 ] # 128 is the last code that bash uses before signals
 then
 	result="OK"
-	result_color=$GREEN
+	if [ $? -eq 5 ]
+	then
+		result_color=$GREEN
+	else
+		result_color=$YELLOW
+	fi
 else
-	result="KO"
-	result_color=$YELLOW
+	if [ $status_code -eq 254 ]
+	then
+		result="TO"
+	else
+		result="KO"
+	fi
+	result_color=$RED
 fi
 printf "\r${result_color}# $num: %-69s [%s]\n${NC}" "$description" "$result"
 
@@ -238,13 +299,19 @@ printf "\r${result_color}# $num: %-69s [%s]\n${NC}" "$description" "$result"
 num="08"
 description="The program handles infile's open error"
 printf "${BLUE}# $num: %-69s  []${NC}" "$description"
-$PROJECT_DIRECTORY/pipex "not-existing/deepthought.txt" "grep Now" "wc -w" "outs/test-08.txt" > outs/test-08-tty.txt 2>&1
-if [ $? -eq 0 ]
+pipex_test $PROJECT_DIRECTORY/pipex "not-existing/deepthought.txt" "grep Now" "wc -w" "outs/test-08.txt" > outs/test-08-tty.txt 2>&1
+status_code=$?
+if [ $status_code -eq 0 ]
 then
 	result="OK"
 	result_color=$GREEN
 else
-	result="KO"
+	if [ $status_code -eq 254 ]
+	then
+		result="TO"
+	else
+		result="KO"
+	fi
 	result_color=$RED
 fi
 printf "\r${result_color}# $num: %-69s [%s]\n${NC}" "$description" "$result"
@@ -253,7 +320,7 @@ printf "\r${result_color}# $num: %-69s [%s]\n${NC}" "$description" "$result"
 num="09"
 description="The output when infile's open error occur is correct"
 printf "${BLUE}# $num: %-69s  []${NC}" "$description"
-$PROJECT_DIRECTORY/pipex "not-existing/deepthought.txt" "grep Now" "wc -w" "outs/test-09.txt" > outs/test-09-tty.txt 2>&1
+pipex_test $PROJECT_DIRECTORY/pipex "not-existing/deepthought.txt" "grep Now" "wc -w" "outs/test-09.txt" > outs/test-09-tty.txt 2>&1
 < /dev/null grep Now | wc -w > outs/test-09-original.txt 2>&1
 if diff outs/test-09-original.txt outs/test-09.txt > /dev/null 2>&1
 then
@@ -269,7 +336,7 @@ printf "\r${result_color}# $num: %-69s [%s]\n${NC}" "$description" "$result"
 num="10"
 description="The program handles outfile's open error"
 printf "${BLUE}# $num: %-69s  []${NC}" "$description"
-$PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "grep Now" "wc -w" "not-existing/test-10.txt" > outs/test-10-tty.txt 2>&1
+pipex_test $PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "grep Now" "wc -w" "not-existing/test-10.txt" > outs/test-10-tty.txt 2>&1
 status_code=$?
 if [ $status_code -le 128 ] # 128 is the last code that bash uses before signals
 then
@@ -281,7 +348,12 @@ then
 		result_color=$YELLOW
 	fi
 else
-	result="KO"
+	if [ $status_code -eq 254 ]
+	then
+		result="TO"
+	else
+		result="KO"
+	fi
 	result_color=$RED
 fi
 printf "\r${result_color}# $num: %-69s [%s]\n${NC}" "$description" "$result"
@@ -291,7 +363,7 @@ num="11"
 description="The program handles execve errors"
 printf "${BLUE}# $num: %-69s  []${NC}" "$description"
 chmod 644 assets/deepthought.txt
-PATH=$PWD:$PATH $PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "cat" "./assets/not-executable" "outs/test-11.txt" > outs/test-11-tty.txt 2>&1
+PATH=$PWD:$PATH pipex_test $PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "cat" "./assets/not-executable" "outs/test-11.txt" > outs/test-11-tty.txt 2>&1
 status_code=$?
 if [ $status_code -le 128 ] # 128 is the last code that bash uses before signals
 then
@@ -303,7 +375,12 @@ then
 		result_color=$YELLOW
 	fi
 else
-	result="KO"
+	if [ $status_code -eq 254 ]
+	then
+		result="TO"
+	else
+		result="KO"
+	fi
 	result_color=$RED
 fi
 printf "\r${result_color}# $num: %-69s [%s]\n${NC}" "$description" "$result"
@@ -312,13 +389,19 @@ printf "\r${result_color}# $num: %-69s [%s]\n${NC}" "$description" "$result"
 num="12"
 description="The program handles path that doesn't exist"
 printf "${BLUE}# $num: %-69s  []${NC}" "$description"
-PATH=/not/existing:$PATH $PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "grep Now" "wc -w" "outs/test-12.txt" > outs/test-12-tty.txt 2>&1
-if [ $? -eq 0 ]
+PATH=/not/existing:$PATH pipex_test $PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "grep Now" "wc -w" "outs/test-12.txt" > outs/test-12-tty.txt 2>&1
+status_code=$?
+if [ $status_code -eq 0 ]
 then
 	result="OK"
 	result_color=$GREEN
 else
-	result="KO"
+	if [ $status_code -eq 254 ]
+	then
+		result="TO"
+	else
+		result="KO"
+	fi
 	result_color=$RED
 fi
 printf "\r${result_color}# $num: %-69s [%s]\n${NC}" "$description" "$result"
@@ -332,13 +415,19 @@ printf "$PROJECT_DIRECTORY/pipex \"assets/deepthought.txt\" \"cat\" \"ls\" \"out
 num="13"
 description="The program handles the command"
 printf "${BLUE}# $num: %-69s  []${NC}" "$description"
-$PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "cat" "ls" "outs/test-13.txt" > outs/test-13-tty.txt 2>&1
-if [ $? -eq 0 ]
+pipex_test $PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "cat" "ls" "outs/test-13.txt" > outs/test-13-tty.txt 2>&1
+status_code=$?
+if [ $status_code -eq 0 ]
 then
 	result="OK"
 	result_color=$GREEN
 else
-	result="KO"
+	if [ $status_code -eq 254 ]
+	then
+		result="TO"
+	else
+		result="KO"
+	fi
 	result_color=$RED
 fi
 printf "\r${result_color}# $num: %-69s [%s]\n${NC}" "$description" "$result"
@@ -347,7 +436,7 @@ printf "\r${result_color}# $num: %-69s [%s]\n${NC}" "$description" "$result"
 num="14"
 description="The output of the command is correct"
 printf "${BLUE}# $num: %-69s  []${NC}" "$description"
-$PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "cat" "ls" "outs/test-14.txt" > outs/test-14-tty.txt 2>&1
+pipex_test $PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "cat" "ls" "outs/test-14.txt" > outs/test-14-tty.txt 2>&1
 < assets/deepthought.txt cat | ls > outs/test-14-original.txt 2>&1
 if diff outs/test-14-original.txt outs/test-14.txt > /dev/null 2>&1
 then
@@ -368,13 +457,19 @@ printf "$PROJECT_DIRECTORY/pipex \"assets/deepthought.txt\" \"grep Now\" \"head 
 num="15"
 description="The program handles the command"
 printf "${BLUE}# $num: %-69s  []${NC}" "$description"
-$PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "grep Now" "head -2" "outs/test-15.txt" > outs/test-15-tty.txt 2>&1
-if [ $? -eq 0 ]
+pipex_test $PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "grep Now" "head -2" "outs/test-15.txt" > outs/test-15-tty.txt 2>&1
+status_code=$?
+if [ $status_code -eq 0 ]
 then
 	result="OK"
 	result_color=$GREEN
 else
-	result="KO"
+	if [ $status_code -eq 254 ]
+	then
+		result="TO"
+	else
+		result="KO"
+	fi
 	result_color=$RED
 fi
 printf "\r${result_color}# $num: %-69s [%s]\n${NC}" "$description" "$result"
@@ -383,7 +478,7 @@ printf "\r${result_color}# $num: %-69s [%s]\n${NC}" "$description" "$result"
 num="16"
 description="The output of the command is correct"
 printf "${BLUE}# $num: %-69s  []${NC}" "$description"
-$PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "grep Now" "head -2" "outs/test-16.txt" > outs/test-16-tty.txt 2>&1
+pipex_test $PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "grep Now" "head -2" "outs/test-16.txt" > outs/test-16-tty.txt 2>&1
 < assets/deepthought.txt grep Now | head -2 > outs/test-16-original.txt 2>&1
 if diff outs/test-16-original.txt outs/test-16.txt > /dev/null 2>&1
 then
@@ -404,13 +499,19 @@ printf "$PROJECT_DIRECTORY/pipex \"assets/deepthought.txt\" \"grep Now\" \"wc -w
 num="17"
 description="The program handles the command"
 printf "${BLUE}# $num: %-69s  []${NC}" "$description"
-$PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "grep Now" "wc -w" "outs/test-17.txt" > outs/test-17-tty.txt 2>&1
-if [ $? -eq 0 ]
+pipex_test $PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "grep Now" "wc -w" "outs/test-17.txt" > outs/test-17-tty.txt 2>&1
+status_code=$?
+if [ $status_code -eq 0 ]
 then
 	result="OK"
 	result_color=$GREEN
 else
-	result="KO"
+	if [ $status_code -eq 254 ]
+	then
+		result="TO"
+	else
+		result="KO"
+	fi
 	result_color=$RED
 fi
 printf "\r${result_color}# $num: %-69s [%s]\n${NC}" "$description" "$result"
@@ -419,7 +520,7 @@ printf "\r${result_color}# $num: %-69s [%s]\n${NC}" "$description" "$result"
 num="18"
 description="The output of the command is correct"
 printf "${BLUE}# $num: %-69s  []${NC}" "$description"
-$PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "grep Now" "wc -w" "outs/test-18.txt" > outs/test-18-tty.txt 2>&1
+pipex_test $PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "grep Now" "wc -w" "outs/test-18.txt" > outs/test-18-tty.txt 2>&1
 < assets/deepthought.txt grep Now | wc -w > outs/test-18-original.txt 2>&1
 if diff outs/test-18-original.txt outs/test-18.txt > /dev/null 2>&1
 then
@@ -442,15 +543,20 @@ printf "$PROJECT_DIRECTORY/pipex \"assets/deepthought.txt\" \"wc -w\" \"cat\" \"
 num="19"
 description="The program handles the command"
 printf "${BLUE}# $num: %-69s  []${NC}" "$description"
-$PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "grep Now" "cat" "outs/test-19.txt" > outs/test-19.0-tty.txt 2>&1
+pipex_test $PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "grep Now" "cat" "outs/test-19.txt" > outs/test-19.0-tty.txt 2>&1
 status_code=$?
-$PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "wc -w" "cat" "outs/test-19.txt" > outs/test-19.1-tty.txt 2>&1
+pipex_test $PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "wc -w" "cat" "outs/test-19.txt" > outs/test-19.1-tty.txt 2>&1
 if [ $status_code -eq 0 ] && [ $? -eq 0 ]
 then
 	result="OK"
 	result_color=$GREEN
 else
-	result="KO"
+	if [ $status_code -eq 254 ]
+	then
+		result="TO"
+	else
+		result="KO"
+	fi
 	result_color=$RED
 fi
 printf "\r${result_color}# $num: %-69s [%s]\n${NC}" "$description" "$result"
@@ -459,8 +565,8 @@ printf "\r${result_color}# $num: %-69s [%s]\n${NC}" "$description" "$result"
 num="20"
 description="The output of the command is correct"
 printf "${BLUE}# $num: %-69s  []${NC}" "$description"
-$PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "grep Now" "cat" "outs/test-20.txt" > outs/test-20.0-tty.txt 2>&1
-$PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "wc -w" "cat" "outs/test-20.txt" > outs/test-20.1-tty.txt 2>&1
+pipex_test $PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "grep Now" "cat" "outs/test-20.txt" > outs/test-20.0-tty.txt 2>&1
+pipex_test $PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "wc -w" "cat" "outs/test-20.txt" > outs/test-20.1-tty.txt 2>&1
 < assets/deepthought.txt grep Now | cat > outs/test-20-original.txt
 < assets/deepthought.txt wc -w | cat > outs/test-20-original.txt
 if diff outs/test-20-original.txt outs/test-20.txt > /dev/null 2>&1
@@ -483,9 +589,9 @@ printf "${ULINE}(notexisting is a command that is not supposed to exist)${NC}\n\
 num="21"
 description="The program handles the command"
 printf "${BLUE}# $num: %-69s  []${NC}" "$description"
-$PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "notexisting" "wc" "outs/test-21.txt" > outs/test-21-tty.txt 2>&1
+pipex_test $PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "notexisting" "wc" "outs/test-21.txt" > outs/test-21-tty.txt 2>&1
 status_code=$?
-if [ $? -le 128 ] # 128 is the last code that bash uses before signals
+if [ $status_code -le 128 ] # 128 is the last code that bash uses before signals
 then
 	result="OK"
 	if [ $status_code -eq 0 ]
@@ -495,7 +601,12 @@ then
 		result_color=$YELLOW
 	fi
 else
-	result="KO"
+	if [ $status_code -eq 254 ]
+	then
+		result="TO"
+	else
+		result="KO"
+	fi
 	result_color=$RED
 fi
 printf "\r${result_color}# $num: %-69s [%s]\n${NC}" "$description" "$result"
@@ -504,7 +615,7 @@ printf "\r${result_color}# $num: %-69s [%s]\n${NC}" "$description" "$result"
 num="22"
 description="The output of the command contains 'command not found'"
 printf "${BLUE}# $num: %-69s  []${NC}" "$description"
-$PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "notexisting" "wc" "outs/test-22.txt" > outs/test-22-tty.txt 2>&1
+pipex_test $PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "notexisting" "wc" "outs/test-22.txt" > outs/test-22-tty.txt 2>&1
 if grep "command not found" outs/test-22-tty.txt > /dev/null 2>&1
 then
 	result="OK"
@@ -519,7 +630,7 @@ printf "\r${result_color}# $num: %-69s [%s]\n${NC}" "$description" "$result"
 num="23"
 description="The output of the command is correct"
 printf "${BLUE}# $num: %-69s  []${NC}" "$description"
-$PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "notexisting" "wc" "outs/test-23.txt" > outs/test-23-tty.txt 2>&1
+pipex_test $PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "notexisting" "wc" "outs/test-23.txt" > outs/test-23-tty.txt 2>&1
 < /dev/null cat | wc > outs/test-23-original.txt 2>&1
 if diff outs/test-23-original.txt outs/test-23.txt > /dev/null 2>&1
 then
@@ -541,7 +652,7 @@ printf "${ULINE}(notexisting is a command that is not supposed to exist)${NC}\n\
 num="24"
 description="The program exits with the right status code"
 printf "${BLUE}# $num: %-69s  []${NC}" "$description"
-$PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "cat" "notexisting" "outs/test-24.txt" > outs/test-24-tty.txt 2>&1
+pipex_test $PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "cat" "notexisting" "outs/test-24.txt" > outs/test-24-tty.txt 2>&1
 status_code=$?
 if [ $status_code -le 128 ] # 128 is the last code that bash uses before signals
 then
@@ -553,7 +664,12 @@ then
 		result_color=$YELLOW
 	fi
 else
-	result="KO"
+	if [ $status_code -eq 254 ]
+	then
+		result="TO"
+	else
+		result="KO"
+	fi
 	result_color=$RED
 fi
 printf "\r${result_color}# $num: %-69s [%s]\n${NC}" "$description" "$result"
@@ -562,7 +678,7 @@ printf "\r${result_color}# $num: %-69s [%s]\n${NC}" "$description" "$result"
 num="25"
 description="The output of the command contains 'command not found'"
 printf "${BLUE}# $num: %-69s  []${NC}" "$description"
-$PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "cat" "notexisting" "outs/test-25.txt" > outs/test-25-tty.txt 2>&1
+pipex_test $PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "cat" "notexisting" "outs/test-25.txt" > outs/test-25-tty.txt 2>&1
 if grep "command not found" outs/test-25-tty.txt > /dev/null 2>&1
 then
 	result="OK"
@@ -577,7 +693,7 @@ printf "\r${result_color}# $num: %-69s [%s]\n${NC}" "$description" "$result"
 num="26"
 description="The output of the command is correct"
 printf "${BLUE}# $num: %-69s  []${NC}" "$description"
-$PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "cat" "notexisting" "outs/test-26.txt" > outs/test-26-tty.txt 2>&1
+pipex_test $PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "cat" "notexisting" "outs/test-26.txt" > outs/test-26-tty.txt 2>&1
 < assets/deepthought.txt cat | cat /dev/null > outs/test-26-original.txt 2>&1
 if diff outs/test-26-original.txt outs/test-26.txt > /dev/null 2>&1
 then
@@ -598,25 +714,19 @@ printf "$PROJECT_DIRECTORY/pipex \"/dev/urandom\" \"cat\" \"head -1\" \"outs/tes
 num="27"
 description="The program does not timeout"
 printf "${BLUE}# $num: %-69s  []${NC}" "$description"
-$PROJECT_DIRECTORY/pipex "/dev/urandom" "cat" "head -1" "outs/test-27.txt" > outs/test-27-tty.txt 2>&1 &
-i=0
-bg_process=$!
-while kill -0 $bg_process > /dev/null 2>&1
-do
-	if [ $i -eq 5 ]
-	then
-		kill $bg_process > /dev/null 2>&1
-		break
-	fi
-	sleep 1
-	i=$(($i + 1))
-done
-if [ $i -lt 5 ]
+pipex_test $PROJECT_DIRECTORY/pipex "/dev/urandom" "cat" "head -1" "outs/test-27.txt" > outs/test-27-tty.txt 2>&1 &
+status_code=$?
+if [ $status_code -eq 0 ]
 then
 	result="OK"
 	result_color=$GREEN
 else
-	result="OK"
+	if [ $status_code -eq 254 ]
+	then
+		result="TO"
+	else
+		result="KO"
+	fi
 	result_color=$RED
 fi
 printf "\r${result_color}# $num: %-69s [%s]\n${NC}" "$description" "$result"
