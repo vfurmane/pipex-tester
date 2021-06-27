@@ -61,11 +61,13 @@ pipex_test()
 TESTS_OK=0
 TESTS_KO=0
 TESTS_TO=0
+exec 3>&1
 
 pipex_summary()
 {
-	printf "\n"
-	printf "\t${BOLD}Summary${NC}\n\n"
+	exec 1>&3
+	printf "\n\n"
+	printf "\t${BOLD}Summary${NC}\n\n" > /dev/stdout
 	
 	printf "${GREEN}$TESTS_OK OK${NC} - ${RED}$TESTS_KO KO${NC} - ${RED}$TESTS_TO TO${NC}\n\n"
 	
@@ -95,6 +97,8 @@ printf "\n\n"
 
 ONLY_CONFIG=0
 READ_CONFIG=1
+
+trap pipex_summary SIGINT
 
 # Parse arguments
 while [ $# -gt 0 ]
@@ -834,12 +838,5 @@ else
 	result_color=$RED
 fi
 printf "\r${result_color}# $num: %-69s [%s]\n${NC}" "$description" "$result"
-
-if grep -i leak outs/test-*-tty.txt > /dev/null 2>&1
-then
-	printf "\n${RED}Leaks detected...${NC}\n"
-else
-	printf "\n${GREEN}No leak detected !${NC}\n"
-fi
 
 pipex_summary
