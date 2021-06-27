@@ -137,13 +137,19 @@ printf "\r${result_color}# $num: %-69s [%s]\n${NC}" "$description" "$result"
 
 # TEST 03
 num="03"
-description="The program do not crash with no parameters"
+description="The program does not crash with no parameters"
 printf "${BLUE}# $num: %-69s  []${NC}" "$description"
 $PROJECT_DIRECTORY/pipex > outs/test-03-tty.txt 2>&1
-if [ $? -lt 126 ] # 126 is the lowest code that bash uses for errors
+status_code=$?
+if [ $status_code -le 128 ] # 128 is the last code that bash uses before signals
 then
 	result="OK"
-	result_color=$GREEN
+	if [ $status_code -ne 0 ]
+	then
+		result_color=$GREEN
+	else
+		result_color=$YELLOW
+	fi
 else
 	result="KO"
 	result_color=$RED
@@ -152,13 +158,19 @@ printf "\r${result_color}# $num: %-69s [%s]\n${NC}" "$description" "$result"
 
 # TEST 04
 num="04"
-description="The program do not crash with one parameter"
+description="The program does not crash with one parameter"
 printf "${BLUE}# $num: %-69s  []${NC}" "$description"
 $PROJECT_DIRECTORY/pipex "assets/deepthought.txt" > outs/test-04-tty.txt 2>&1
-if [ $? -lt 126 ] # 126 is the lowest code that bash uses for errors
+status_code=$?
+if [ $status_code -le 128 ] # 128 is the last code that bash uses before signals
 then
 	result="OK"
-	result_color=$GREEN
+	if [ $status_code -ne 0 ]
+	then
+		result_color=$GREEN
+	else
+		result_color=$YELLOW
+	fi
 else
 	result="KO"
 	result_color=$RED
@@ -167,13 +179,19 @@ printf "\r${result_color}# $num: %-69s [%s]\n${NC}" "$description" "$result"
 
 # TEST 05
 num="05"
-description="The program do not crash with two parameters"
+description="The program does not crash with two parameters"
 printf "${BLUE}# $num: %-69s  []${NC}" "$description"
 $PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "grep Now" > outs/test-05-tty.txt 2>&1
-if [ $? -lt 126 ] # 126 is the lowest code that bash uses for errors
+status_code=$?
+if [ $status_code -le 128 ] # 128 is the last code that bash uses before signals
 then
 	result="OK"
-	result_color=$GREEN
+	if [ $status_code -ne 0 ]
+	then
+		result_color=$GREEN
+	else
+		result_color=$YELLOW
+	fi
 else
 	result="KO"
 	result_color=$RED
@@ -182,13 +200,19 @@ printf "\r${result_color}# $num: %-69s [%s]\n${NC}" "$description" "$result"
 
 # TEST 06
 num="06"
-description="The program do not crash with 3 parameters"
+description="The program does not crash with three parameters"
 printf "${BLUE}# $num: %-69s  []${NC}" "$description"
 $PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "grep Now" "wc -w" > outs/test-06-tty.txt 2>&1
-if [ $? -lt 126 ] # 126 is the lowest code that bash uses for errors
+status_code=$?
+if [ $status_code -le 128 ] # 128 is the last code that bash uses before signals
 then
 	result="OK"
-	result_color=$GREEN
+	if [ $status_code -ne 0 ]
+	then
+		result_color=$GREEN
+	else
+		result_color=$YELLOW
+	fi
 else
 	result="KO"
 	result_color=$RED
@@ -206,7 +230,7 @@ then
 	result_color=$GREEN
 else
 	result="KO"
-	result_color=$RED
+	result_color=$YELLOW
 fi
 printf "\r${result_color}# $num: %-69s [%s]\n${NC}" "$description" "$result"
 
@@ -246,10 +270,16 @@ num="10"
 description="The program handles outfile's open error"
 printf "${BLUE}# $num: %-69s  []${NC}" "$description"
 $PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "grep Now" "wc -w" "not-existing/test-10.txt" > outs/test-10-tty.txt 2>&1
-if [ $? -gt 0 ] && [ $? -lt 126 ] # 126 is the lowest code that bash uses for errors
+status_code=$?
+if [ $status_code -le 128 ] # 128 is the last code that bash uses before signals
 then
 	result="OK"
-	result_color=$GREEN
+	if [ $status_code -ne 0 ]
+	then
+		result_color=$GREEN
+	else
+		result_color=$YELLOW
+	fi
 else
 	result="KO"
 	result_color=$RED
@@ -262,10 +292,16 @@ description="The program handles execve errors"
 printf "${BLUE}# $num: %-69s  []${NC}" "$description"
 chmod 644 assets/deepthought.txt
 PATH=$PWD:$PATH $PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "cat" "./assets/not-executable" "outs/test-11.txt" > outs/test-11-tty.txt 2>&1
-if [ $? -gt 0 ] && [ $? -lt 126 ] # 126 is the lowest code that bash uses for errors
+status_code=$?
+if [ $status_code -le 128 ] # 128 is the last code that bash uses before signals
 then
 	result="OK"
-	result_color=$GREEN
+	if [ $status_code -ne 0 ]
+	then
+		result_color=$GREEN
+	else
+		result_color=$YELLOW
+	fi
 else
 	result="KO"
 	result_color=$RED
@@ -277,8 +313,7 @@ num="12"
 description="The program handles path that doesn't exist"
 printf "${BLUE}# $num: %-69s  []${NC}" "$description"
 PATH=/not/existing:$PATH $PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "grep Now" "wc -w" "outs/test-12.txt" > outs/test-12-tty.txt 2>&1
-status_code=$?
-if [ $status_code -eq 0 ]
+if [ $? -eq 0 ]
 then
 	result="OK"
 	result_color=$GREEN
@@ -449,10 +484,16 @@ num="21"
 description="The program handles the command"
 printf "${BLUE}# $num: %-69s  []${NC}" "$description"
 $PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "notexisting" "wc" "outs/test-21.txt" > outs/test-21-tty.txt 2>&1
-if [ $? -eq 0 ]
+status_code=$?
+if [ $? -le 128 ] # 128 is the last code that bash uses before signals
 then
 	result="OK"
-	result_color=$GREEN
+	if [ $status_code -eq 0 ]
+	then
+		result_color=$GREEN
+	else
+		result_color=$YELLOW
+	fi
 else
 	result="KO"
 	result_color=$RED
@@ -501,10 +542,16 @@ num="24"
 description="The program exits with the right status code"
 printf "${BLUE}# $num: %-69s  []${NC}" "$description"
 $PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "cat" "notexisting" "outs/test-24.txt" > outs/test-24-tty.txt 2>&1
-if [ $? -eq 127 ]
+status_code=$?
+if [ $status_code -le 128 ] # 128 is the last code that bash uses before signals
 then
 	result="OK"
-	result_color=$GREEN
+	if [ $status_code -eq 127 ]
+	then
+		result_color=$GREEN
+	else
+		result_color=$YELLOW
+	fi
 else
 	result="KO"
 	result_color=$RED
