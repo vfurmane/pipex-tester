@@ -27,26 +27,33 @@ fatal_error()
 	exit $exit_status
 }
 
+DISABLE_TIMEOUT=0
+
 pipex_test()
 {
-	"$@" &
-	bg_process=$!
-	i=0
-	while kill -0 $bg_process > /dev/null 2>&1
-	do
-		if [ $i -eq 5 ]
-		then
-			kill $bg_process > /dev/null 2>&1
-			break
-		fi
-		sleep 1
-		i=$(($i + 1))
-	done
-	if [ $i -ge 5 ]
+	if [ $DISABLE_TIMEOUT -eq 0 ]
 	then
-		return 254 # arbitrary number for timeout error
+		"$@" &
+		bg_process=$!
+		i=0
+		while kill -0 $bg_process > /dev/null 2>&1
+		do
+			if [ $i -eq 5 ]
+			then
+				kill $bg_process > /dev/null 2>&1
+				break
+			fi
+			sleep 1
+			i=$(($i + 1))
+		done
+		if [ $i -ge 5 ]
+		then
+			return 254 # arbitrary number for timeout error
+		fi
+		wait $bg_process
+	else
+		"$@"
 	fi
-	wait $bg_process
 	status_code=$?
 	return $status_code
 }
@@ -95,6 +102,9 @@ do
 	case $1 in
 		-c|--config)
 			ONLY_CONFIG=1
+		shift;;
+		-t|--disable-timeout)
+			DISABLE_TIMEOUT=1
 		shift;;
 		*)
 		fatal_error "Unknown argument '$1'";;

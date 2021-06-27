@@ -36,6 +36,14 @@ Allow you to reconfigure the tester.
 ./run.sh -c
 ```
 
+#### -t | --disable-timeout
+
+Disable the timeout tests. May run the tests faster.
+
+```shell
+./run.sh -t
+```
+
 ## Troubleshooting
 
 If you encounter another problem, please feel free to open an Issue using the **GitHub**'s tab.
