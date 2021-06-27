@@ -51,6 +51,30 @@ pipex_test()
 	return $status_code
 }
 
+TESTS_OK=0
+TESTS_KO=0
+TESTS_TO=0
+
+pipex_summary()
+{
+	printf "\n"
+	printf "\t${BOLD}Summary${NC}\n\n"
+	
+	printf "${GREEN}$TESTS_OK OK${NC} - ${RED}$TESTS_KO KO${NC} - ${RED}$TESTS_TO TO${NC}\n\n"
+	
+	printf "${GREEN}OK${NC}: Test passed\n"
+	printf "${YELLOW}OK${NC}: Not opitmal or like bash (should not invalidate the project)\n"
+	printf "${RED}KO${NC}: Test did not pass\n"
+	printf "${RED}TO${NC}: Test timed out\n"
+	
+	if [ $TESTS_KO -eq 0 ] && [ $TESTS_TO -eq 0 ]
+	then
+		exit 0
+	else
+		exit 1
+	fi
+}
+
 cd "$(dirname "$0")"
 
 printf "+------------------------------------------------------------------------------+\n"
@@ -138,13 +162,16 @@ pipex_test make -C $PROJECT_DIRECTORY > outs/test-01.txt 2>&1
 status_code=$?
 if [ $status_code -eq 0 ]
 then
+	TESTS_OK=$(($TESTS_OK + 1))
 	result="OK"
 	result_color=$GREEN
 else
 	if [ $status_code -eq 254 ]
 	then
+		TESTS_TO=$(($TESTS_TO + 1))
 		result="TO"
 	else
+		TESTS_KO=$(($TESTS_KO + 1))
 		result="KO"
 	fi
 	result_color=$RED
@@ -157,9 +184,11 @@ description="The program is executable as ./pipex"
 printf "${BLUE}# $num: %-69s  []${NC}" "$description"
 if [ -x $PROJECT_DIRECTORY/pipex ]
 then
+	TESTS_OK=$(($TESTS_OK + 1))
 	result="OK"
 	result_color=$GREEN
 else
+	TESTS_KO=$(($TESTS_KO + 1))
 	result="KO"
 	result_color=$RED
 fi
@@ -173,6 +202,7 @@ pipex_test $PROJECT_DIRECTORY/pipex > outs/test-03-tty.txt 2>&1
 status_code=$?
 if [ $status_code -le 128 ] # 128 is the last code that bash uses before signals
 then
+	TESTS_OK=$(($TESTS_OK + 1))
 	result="OK"
 	if [ $status_code -ne 0 ]
 	then
@@ -183,8 +213,10 @@ then
 else
 	if [ $status_code -eq 254 ]
 	then
+		TESTS_TO=$(($TESTS_TO + 1))
 		result="TO"
 	else
+		TESTS_KO=$(($TESTS_KO + 1))
 		result="KO"
 	fi
 	result_color=$RED
@@ -199,6 +231,7 @@ pipex_test $PROJECT_DIRECTORY/pipex "assets/deepthought.txt" > outs/test-04-tty.
 status_code=$?
 if [ $status_code -le 128 ] # 128 is the last code that bash uses before signals
 then
+	TESTS_OK=$(($TESTS_OK + 1))
 	result="OK"
 	if [ $status_code -ne 0 ]
 	then
@@ -209,8 +242,10 @@ then
 else
 	if [ $status_code -eq 254 ]
 	then
+		TESTS_TO=$(($TESTS_TO + 1))
 		result="TO"
 	else
+		TESTS_KO=$(($TESTS_KO + 1))
 		result="KO"
 	fi
 	result_color=$RED
@@ -225,6 +260,7 @@ pipex_test $PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "grep Now" > outs/t
 status_code=$?
 if [ $status_code -le 128 ] # 128 is the last code that bash uses before signals
 then
+	TESTS_OK=$(($TESTS_OK + 1))
 	result="OK"
 	if [ $status_code -ne 0 ]
 	then
@@ -235,8 +271,10 @@ then
 else
 	if [ $status_code -eq 254 ]
 	then
+		TESTS_TO=$(($TESTS_TO + 1))
 		result="TO"
 	else
+		TESTS_KO=$(($TESTS_KO + 1))
 		result="KO"
 	fi
 	result_color=$RED
@@ -251,6 +289,7 @@ pipex_test $PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "grep Now" "wc -w" 
 status_code=$?
 if [ $status_code -le 128 ] # 128 is the last code that bash uses before signals
 then
+	TESTS_OK=$(($TESTS_OK + 1))
 	result="OK"
 	if [ $status_code -ne 0 ]
 	then
@@ -261,8 +300,10 @@ then
 else
 	if [ $status_code -eq 254 ]
 	then
+		TESTS_TO=$(($TESTS_TO + 1))
 		result="TO"
 	else
+		TESTS_KO=$(($TESTS_KO + 1))
 		result="KO"
 	fi
 	result_color=$RED
@@ -274,11 +315,11 @@ num="07"
 description="The program exits with the last command's status code"
 printf "${BLUE}# $num: %-69s  []${NC}" "$description"
 PATH=$PWD:$PATH pipex_test $PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "grep Now" "./assets/exit.sh 5" "outs/test-07.txt" > outs/test-07-tty.txt 2>&1
-status_code=$?
 if [ $status_code -le 128 ] # 128 is the last code that bash uses before signals
 then
+	TESTS_OK=$(($TESTS_OK + 1))
 	result="OK"
-	if [ $? -eq 5 ]
+	if [ $status_code -eq 5 ]
 	then
 		result_color=$GREEN
 	else
@@ -287,8 +328,10 @@ then
 else
 	if [ $status_code -eq 254 ]
 	then
+		TESTS_TO=$(($TESTS_TO + 1))
 		result="TO"
 	else
+		TESTS_KO=$(($TESTS_KO + 1))
 		result="KO"
 	fi
 	result_color=$RED
@@ -303,13 +346,16 @@ pipex_test $PROJECT_DIRECTORY/pipex "not-existing/deepthought.txt" "grep Now" "w
 status_code=$?
 if [ $status_code -eq 0 ]
 then
+	TESTS_OK=$(($TESTS_OK + 1))
 	result="OK"
 	result_color=$GREEN
 else
 	if [ $status_code -eq 254 ]
 	then
+		TESTS_TO=$(($TESTS_TO + 1))
 		result="TO"
 	else
+		TESTS_KO=$(($TESTS_KO + 1))
 		result="KO"
 	fi
 	result_color=$RED
@@ -324,9 +370,11 @@ pipex_test $PROJECT_DIRECTORY/pipex "not-existing/deepthought.txt" "grep Now" "w
 < /dev/null grep Now | wc -w > outs/test-09-original.txt 2>&1
 if diff outs/test-09-original.txt outs/test-09.txt > /dev/null 2>&1
 then
+	TESTS_OK=$(($TESTS_OK + 1))
 	result="OK"
 	result_color=$GREEN
 else
+	TESTS_KO=$(($TESTS_KO + 1))
 	result="KO"
 	result_color=$RED
 fi
@@ -340,6 +388,7 @@ pipex_test $PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "grep Now" "wc -w" 
 status_code=$?
 if [ $status_code -le 128 ] # 128 is the last code that bash uses before signals
 then
+	TESTS_OK=$(($TESTS_OK + 1))
 	result="OK"
 	if [ $status_code -ne 0 ]
 	then
@@ -350,8 +399,10 @@ then
 else
 	if [ $status_code -eq 254 ]
 	then
+		TESTS_TO=$(($TESTS_TO + 1))
 		result="TO"
 	else
+		TESTS_KO=$(($TESTS_KO + 1))
 		result="KO"
 	fi
 	result_color=$RED
@@ -367,6 +418,7 @@ PATH=$PWD:$PATH pipex_test $PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "ca
 status_code=$?
 if [ $status_code -le 128 ] # 128 is the last code that bash uses before signals
 then
+	TESTS_OK=$(($TESTS_OK + 1))
 	result="OK"
 	if [ $status_code -ne 0 ]
 	then
@@ -377,8 +429,10 @@ then
 else
 	if [ $status_code -eq 254 ]
 	then
+		TESTS_TO=$(($TESTS_TO + 1))
 		result="TO"
 	else
+		TESTS_KO=$(($TESTS_KO + 1))
 		result="KO"
 	fi
 	result_color=$RED
@@ -393,13 +447,16 @@ PATH=/not/existing:$PATH pipex_test $PROJECT_DIRECTORY/pipex "assets/deepthought
 status_code=$?
 if [ $status_code -eq 0 ]
 then
+	TESTS_OK=$(($TESTS_OK + 1))
 	result="OK"
 	result_color=$GREEN
 else
 	if [ $status_code -eq 254 ]
 	then
+		TESTS_TO=$(($TESTS_TO + 1))
 		result="TO"
 	else
+		TESTS_KO=$(($TESTS_KO + 1))
 		result="KO"
 	fi
 	result_color=$RED
@@ -419,13 +476,16 @@ pipex_test $PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "cat" "ls" "outs/te
 status_code=$?
 if [ $status_code -eq 0 ]
 then
+	TESTS_OK=$(($TESTS_OK + 1))
 	result="OK"
 	result_color=$GREEN
 else
 	if [ $status_code -eq 254 ]
 	then
+		TESTS_TO=$(($TESTS_TO + 1))
 		result="TO"
 	else
+		TESTS_KO=$(($TESTS_KO + 1))
 		result="KO"
 	fi
 	result_color=$RED
@@ -440,9 +500,11 @@ pipex_test $PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "cat" "ls" "outs/te
 < assets/deepthought.txt cat | ls > outs/test-14-original.txt 2>&1
 if diff outs/test-14-original.txt outs/test-14.txt > /dev/null 2>&1
 then
+	TESTS_OK=$(($TESTS_OK + 1))
 	result="OK"
 	result_color=$GREEN
 else
+	TESTS_KO=$(($TESTS_KO + 1))
 	result="KO"
 	result_color=$RED
 fi
@@ -461,13 +523,16 @@ pipex_test $PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "grep Now" "head -2
 status_code=$?
 if [ $status_code -eq 0 ]
 then
+	TESTS_OK=$(($TESTS_OK + 1))
 	result="OK"
 	result_color=$GREEN
 else
 	if [ $status_code -eq 254 ]
 	then
+		TESTS_TO=$(($TESTS_TO + 1))
 		result="TO"
 	else
+		TESTS_KO=$(($TESTS_KO + 1))
 		result="KO"
 	fi
 	result_color=$RED
@@ -482,9 +547,11 @@ pipex_test $PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "grep Now" "head -2
 < assets/deepthought.txt grep Now | head -2 > outs/test-16-original.txt 2>&1
 if diff outs/test-16-original.txt outs/test-16.txt > /dev/null 2>&1
 then
+	TESTS_OK=$(($TESTS_OK + 1))
 	result="OK"
 	result_color=$GREEN
 else
+	TESTS_KO=$(($TESTS_KO + 1))
 	result="KO"
 	result_color=$RED
 fi
@@ -503,13 +570,16 @@ pipex_test $PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "grep Now" "wc -w" 
 status_code=$?
 if [ $status_code -eq 0 ]
 then
+	TESTS_OK=$(($TESTS_OK + 1))
 	result="OK"
 	result_color=$GREEN
 else
 	if [ $status_code -eq 254 ]
 	then
+		TESTS_TO=$(($TESTS_TO + 1))
 		result="TO"
 	else
+		TESTS_KO=$(($TESTS_KO + 1))
 		result="KO"
 	fi
 	result_color=$RED
@@ -524,9 +594,11 @@ pipex_test $PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "grep Now" "wc -w" 
 < assets/deepthought.txt grep Now | wc -w > outs/test-18-original.txt 2>&1
 if diff outs/test-18-original.txt outs/test-18.txt > /dev/null 2>&1
 then
+	TESTS_OK=$(($TESTS_OK + 1))
 	result="OK"
 	result_color=$GREEN
 else
+	TESTS_KO=$(($TESTS_KO + 1))
 	result="KO"
 	result_color=$RED
 fi
@@ -548,13 +620,16 @@ status_code=$?
 pipex_test $PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "wc -w" "cat" "outs/test-19.txt" > outs/test-19.1-tty.txt 2>&1
 if [ $status_code -eq 0 ] && [ $? -eq 0 ]
 then
+	TESTS_OK=$(($TESTS_OK + 1))
 	result="OK"
 	result_color=$GREEN
 else
 	if [ $status_code -eq 254 ]
 	then
+		TESTS_TO=$(($TESTS_TO + 1))
 		result="TO"
 	else
+		TESTS_KO=$(($TESTS_KO + 1))
 		result="KO"
 	fi
 	result_color=$RED
@@ -571,9 +646,11 @@ pipex_test $PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "wc -w" "cat" "outs
 < assets/deepthought.txt wc -w | cat > outs/test-20-original.txt
 if diff outs/test-20-original.txt outs/test-20.txt > /dev/null 2>&1
 then
+	TESTS_OK=$(($TESTS_OK + 1))
 	result="OK"
 	result_color=$GREEN
 else
+	TESTS_KO=$(($TESTS_KO + 1))
 	result="KO"
 	result_color=$RED
 fi
@@ -593,6 +670,7 @@ pipex_test $PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "notexisting" "wc" 
 status_code=$?
 if [ $status_code -le 128 ] # 128 is the last code that bash uses before signals
 then
+	TESTS_OK=$(($TESTS_OK + 1))
 	result="OK"
 	if [ $status_code -eq 0 ]
 	then
@@ -603,8 +681,10 @@ then
 else
 	if [ $status_code -eq 254 ]
 	then
+		TESTS_TO=$(($TESTS_TO + 1))
 		result="TO"
 	else
+		TESTS_KO=$(($TESTS_KO + 1))
 		result="KO"
 	fi
 	result_color=$RED
@@ -618,9 +698,11 @@ printf "${BLUE}# $num: %-69s  []${NC}" "$description"
 pipex_test $PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "notexisting" "wc" "outs/test-22.txt" > outs/test-22-tty.txt 2>&1
 if grep "command not found" outs/test-22-tty.txt > /dev/null 2>&1
 then
+	TESTS_OK=$(($TESTS_OK + 1))
 	result="OK"
 	result_color=$GREEN
 else
+	TESTS_KO=$(($TESTS_KO + 1))
 	result="KO"
 	result_color=$RED
 fi
@@ -634,9 +716,11 @@ pipex_test $PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "notexisting" "wc" 
 < /dev/null cat | wc > outs/test-23-original.txt 2>&1
 if diff outs/test-23-original.txt outs/test-23.txt > /dev/null 2>&1
 then
+	TESTS_OK=$(($TESTS_OK + 1))
 	result="OK"
 	result_color=$GREEN
 else
+	TESTS_KO=$(($TESTS_KO + 1))
 	result="KO"
 	result_color=$RED
 fi
@@ -656,6 +740,7 @@ pipex_test $PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "cat" "notexisting"
 status_code=$?
 if [ $status_code -le 128 ] # 128 is the last code that bash uses before signals
 then
+	TESTS_OK=$(($TESTS_OK + 1))
 	result="OK"
 	if [ $status_code -eq 127 ]
 	then
@@ -666,8 +751,10 @@ then
 else
 	if [ $status_code -eq 254 ]
 	then
+		TESTS_TO=$(($TESTS_TO + 1))
 		result="TO"
 	else
+		TESTS_KO=$(($TESTS_KO + 1))
 		result="KO"
 	fi
 	result_color=$RED
@@ -681,9 +768,11 @@ printf "${BLUE}# $num: %-69s  []${NC}" "$description"
 pipex_test $PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "cat" "notexisting" "outs/test-25.txt" > outs/test-25-tty.txt 2>&1
 if grep "command not found" outs/test-25-tty.txt > /dev/null 2>&1
 then
+	TESTS_OK=$(($TESTS_OK + 1))
 	result="OK"
 	result_color=$GREEN
 else
+	TESTS_KO=$(($TESTS_KO + 1))
 	result="KO"
 	result_color=$RED
 fi
@@ -697,9 +786,11 @@ pipex_test $PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "cat" "notexisting"
 < assets/deepthought.txt cat | cat /dev/null > outs/test-26-original.txt 2>&1
 if diff outs/test-26-original.txt outs/test-26.txt > /dev/null 2>&1
 then
+	TESTS_OK=$(($TESTS_OK + 1))
 	result="OK"
 	result_color=$GREEN
 else
+	TESTS_KO=$(($TESTS_KO + 1))
 	result="KO"
 	result_color=$RED
 fi
@@ -718,13 +809,16 @@ pipex_test $PROJECT_DIRECTORY/pipex "/dev/urandom" "cat" "head -1" "outs/test-27
 status_code=$?
 if [ $status_code -eq 0 ]
 then
+	TESTS_OK=$(($TESTS_OK + 1))
 	result="OK"
 	result_color=$GREEN
 else
 	if [ $status_code -eq 254 ]
 	then
+		TESTS_TO=$(($TESTS_TO + 1))
 		result="TO"
 	else
+		TESTS_KO=$(($TESTS_KO + 1))
 		result="KO"
 	fi
 	result_color=$RED
@@ -737,3 +831,5 @@ then
 else
 	printf "\n${GREEN}No leak detected !${NC}\n"
 fi
+
+pipex_summary
