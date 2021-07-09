@@ -198,6 +198,26 @@ printf "\r${result_color}# $num: %-69s [%s]\n${NC}" "$description" "$result"
 
 # TEST
 num=$(echo "$num 1" | awk '{printf "%02d", $1 + $2}')
+description="The program doesn't use forbidden functions"
+printf "${BLUE}# $num: %-69s  []${NC}" "$description"
+nm -u $PROJECT_DIRECTORY/pipex | grep -Ev '(access|close|dup|dup2|__errno_location|execve|exit|fork|free|__gmon_start__|__libc_start_main|malloc|open|perror|pipe|printf|read|strerror|unlink|wait|waitpid|write|dyld_stub_binder)(@|$)' > /dev/null 2>&1
+status_code=$?
+if [ $status_code -eq 1 ]
+then
+	TESTS_OK=$(($TESTS_OK + 1))
+	result="OK"
+	result_color=$GREEN
+else
+	TESTS_KO=$(($TESTS_KO + 1))
+	result="KO"
+	result_color=$RED
+fi
+printf "\r${result_color}# $num: %-69s [%s]\n${NC}" "$description" "$result"
+
+# TEST
+num=$(echo "$num 1" | awk '{printf "%02d", $1 + $2}')
+description="The program does not crash with no parameters"
+printf "${BLUE}# $num: %-69s  []${NC}" "$description"
 pipex_test $PROJECT_DIRECTORY/pipex > outs/test-$num-tty.txt 2>&1
 status_code=$?
 if [ $status_code -le 128 ] # 128 is the last code that bash uses before signals
