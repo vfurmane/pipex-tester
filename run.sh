@@ -29,27 +29,19 @@ fatal_error()
 
 DISABLE_TIMEOUT=0
 
+wait_for_timeout()
+{
+	sleep 5
+	kill $bg_process
+}
+
 pipex_test()
 {
 	if [ $DISABLE_TIMEOUT -eq 0 ]
 	then
 		"$@" &
 		bg_process=$!
-		i=0
-		while kill -0 $bg_process > /dev/null 2>&1
-		do
-			if [ $i -eq 5 ]
-			then
-				kill $bg_process > /dev/null 2>&1
-				break
-			fi
-			sleep 1
-			i=$(($i + 1))
-		done
-		if [ $i -ge 5 ]
-		then
-			return 254 # arbitrary number for timeout error
-		fi
+		wait_for_timeout $bg_process &
 		wait $bg_process
 	else
 		"$@"
