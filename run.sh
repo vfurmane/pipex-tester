@@ -731,9 +731,9 @@ then
 	result="OK"
 	result_color=$GREEN
 else
-	TESTS_KO=$(($TESTS_KO + 1))
-	result="KO"
-	result_color=$RED
+	TESTS_OK=$(($TESTS_OK + 1))
+	result="OK"
+	result_color=$YELLOW
 fi
 printf "\r${result_color}# $num: %-69s [%s]\n${NC}" "$description" "$result"
 
@@ -801,9 +801,9 @@ then
 	result="OK"
 	result_color=$GREEN
 else
-	TESTS_KO=$(($TESTS_KO + 1))
-	result="KO"
-	result_color=$RED
+	TESTS_OK=$(($TESTS_OK + 1))
+	result="OK"
+	result_color=$YELLOW
 fi
 printf "\r${result_color}# $num: %-69s [%s]\n${NC}" "$description" "$result"
 
