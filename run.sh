@@ -31,8 +31,12 @@ DISABLE_TIMEOUT=0
 
 wait_for_timeout()
 {
-	sleep 5
-	kill $bg_process
+	sleep 2
+	if kill -0 $1 > /dev/null 2>&1
+	then
+		echo killing
+		kill $1
+	fi
 }
 
 pipex_test()
@@ -41,6 +45,7 @@ pipex_test()
 	then
 		"$@" &
 		bg_process=$!
+		echo $bg_process
 		wait_for_timeout $bg_process &
 		wait $bg_process
 	else
@@ -168,7 +173,7 @@ then
 	result="OK"
 	result_color=$GREEN
 else
-	if [ $status_code -eq 254 ]
+	if [ $status_code -eq 143 ]
 	then
 		TESTS_TO=$(($TESTS_TO + 1))
 		result="TO"
@@ -200,7 +205,7 @@ printf "\r${result_color}# $num: %-69s [%s]\n${NC}" "$description" "$result"
 num=$(echo "$num 1" | awk '{printf "%02d", $1 + $2}')
 description="The program doesn't use forbidden functions"
 printf "${BLUE}# $num: %-69s  []${NC}" "$description"
-nm -u $PROJECT_DIRECTORY/pipex | grep -Ev '(access|close|dup|dup2|__errno_location|execve|exit|fork|free|__gmon_start__|__libc_start_main|malloc|open|perror|pipe|printf|read|strerror|unlink|wait|waitpid|write|dyld_stub_binder)(@|$)' > /dev/null 2>&1
+nm -u $PROJECT_DIRECTORY/pipex | grep -Ev '(___error|___stack_chk_fail|___stack_chk_guard|access|close|dup|dup2|__errno_location|execve|exit|fork|free|__gmon_start__|__libc_start_main|malloc|open|perror|pipe|printf|read|strerror|unlink|wait|waitpid|write|dyld_stub_binder)(@|$)' > outs/test-$num-tty.txt 2>&1
 status_code=$?
 if [ $status_code -eq 1 ]
 then
@@ -231,7 +236,7 @@ then
 		result_color=$YELLOW
 	fi
 else
-	if [ $status_code -eq 254 ]
+	if [ $status_code -eq 143 ]
 	then
 		TESTS_TO=$(($TESTS_TO + 1))
 		result="TO"
@@ -260,7 +265,7 @@ then
 		result_color=$YELLOW
 	fi
 else
-	if [ $status_code -eq 254 ]
+	if [ $status_code -eq 143 ]
 	then
 		TESTS_TO=$(($TESTS_TO + 1))
 		result="TO"
@@ -289,7 +294,7 @@ then
 		result_color=$YELLOW
 	fi
 else
-	if [ $status_code -eq 254 ]
+	if [ $status_code -eq 143 ]
 	then
 		TESTS_TO=$(($TESTS_TO + 1))
 		result="TO"
@@ -318,7 +323,7 @@ then
 		result_color=$YELLOW
 	fi
 else
-	if [ $status_code -eq 254 ]
+	if [ $status_code -eq 143 ]
 	then
 		TESTS_TO=$(($TESTS_TO + 1))
 		result="TO"
@@ -346,7 +351,7 @@ then
 		result_color=$YELLOW
 	fi
 else
-	if [ $status_code -eq 254 ]
+	if [ $status_code -eq 143 ]
 	then
 		TESTS_TO=$(($TESTS_TO + 1))
 		result="TO"
@@ -370,7 +375,7 @@ then
 	result="OK"
 	result_color=$GREEN
 else
-	if [ $status_code -eq 254 ]
+	if [ $status_code -eq 143 ]
 	then
 		TESTS_TO=$(($TESTS_TO + 1))
 		result="TO"
@@ -417,7 +422,7 @@ then
 		result_color=$YELLOW
 	fi
 else
-	if [ $status_code -eq 254 ]
+	if [ $status_code -eq 143 ]
 	then
 		TESTS_TO=$(($TESTS_TO + 1))
 		result="TO"
@@ -447,7 +452,7 @@ then
 		result_color=$YELLOW
 	fi
 else
-	if [ $status_code -eq 254 ]
+	if [ $status_code -eq 143 ]
 	then
 		TESTS_TO=$(($TESTS_TO + 1))
 		result="TO"
@@ -471,7 +476,7 @@ then
 	result="OK"
 	result_color=$GREEN
 else
-	if [ $status_code -eq 254 ]
+	if [ $status_code -eq 143 ]
 	then
 		TESTS_TO=$(($TESTS_TO + 1))
 		result="TO"
@@ -495,7 +500,7 @@ then
 	result="OK"
 	result_color=$GREEN
 else
-	if [ $status_code -eq 254 ]
+	if [ $status_code -eq 143 ]
 	then
 		TESTS_TO=$(($TESTS_TO + 1))
 		result="TO"
@@ -524,7 +529,7 @@ then
 	result="OK"
 	result_color=$GREEN
 else
-	if [ $status_code -eq 254 ]
+	if [ $status_code -eq 143 ]
 	then
 		TESTS_TO=$(($TESTS_TO + 1))
 		result="TO"
@@ -571,7 +576,7 @@ then
 	result="OK"
 	result_color=$GREEN
 else
-	if [ $status_code -eq 254 ]
+	if [ $status_code -eq 143 ]
 	then
 		TESTS_TO=$(($TESTS_TO + 1))
 		result="TO"
@@ -618,7 +623,7 @@ then
 	result="OK"
 	result_color=$GREEN
 else
-	if [ $status_code -eq 254 ]
+	if [ $status_code -eq 143 ]
 	then
 		TESTS_TO=$(($TESTS_TO + 1))
 		result="TO"
@@ -668,7 +673,7 @@ then
 	result="OK"
 	result_color=$GREEN
 else
-	if [ $status_code -eq 254 ]
+	if [ $status_code -eq 143 ]
 	then
 		TESTS_TO=$(($TESTS_TO + 1))
 		result="TO"
@@ -723,7 +728,7 @@ then
 		result_color=$YELLOW
 	fi
 else
-	if [ $status_code -eq 254 ]
+	if [ $status_code -eq 143 ]
 	then
 		TESTS_TO=$(($TESTS_TO + 1))
 		result="TO"
@@ -793,7 +798,7 @@ then
 		result_color=$YELLOW
 	fi
 else
-	if [ $status_code -eq 254 ]
+	if [ $status_code -eq 143 ]
 	then
 		TESTS_TO=$(($TESTS_TO + 1))
 		result="TO"
@@ -849,7 +854,7 @@ printf "$PROJECT_DIRECTORY/pipex \"/dev/urandom\" \"cat\" \"head -1\" \"outs/tes
 num=$(echo "$num 1" | awk '{printf "%02d", $1 + $2}')
 description="The program does not timeout"
 printf "${BLUE}# $num: %-69s  []${NC}" "$description"
-pipex_test $PROJECT_DIRECTORY/pipex "/dev/urandom" "cat" "head -1" "outs/test-$num.txt" > outs/test-$num-tty.txt 2>&1 &
+pipex_test $PROJECT_DIRECTORY/pipex "/dev/urandom" "cat" "head -1" "outs/test-$num.txt" > outs/test-$num-tty.txt 2>&1
 status_code=$?
 if [ $status_code -eq 0 ]
 then
@@ -857,7 +862,7 @@ then
 	result="OK"
 	result_color=$GREEN
 else
-	if [ $status_code -eq 254 ]
+	if [ $status_code -eq 143 ]
 	then
 		TESTS_TO=$(($TESTS_TO + 1))
 		result="TO"
