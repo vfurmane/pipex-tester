@@ -87,7 +87,7 @@ printf "|                                                                       
 printf "+------------------------------------------------------------------------------+\n"
 printf "\n\n"
 
-ONLY_CONFIG=0
+CONFIG=0
 READ_CONFIG=1
 
 trap pipex_summary SIGINT
@@ -97,7 +97,7 @@ while [ $# -gt 0 ]
 do
 	case $1 in
 		-c|--config)
-			ONLY_CONFIG=1
+			CONFIG=1
 		shift;;
 		-t|--disable-timeout)
 			DISABLE_TIMEOUT=1
@@ -108,7 +108,7 @@ do
 done
 
 # Config
-if ! [ -f config.vars ] || [ $ONLY_CONFIG -gt 0 ]
+if ! [ -f config.vars ] || [ $CONFIG -gt 0 ]
 then
 	printf "\t${BOLD}Configuration${NC}\n\n"
 	printf "The project directory (default: ../pipex): "
@@ -129,11 +129,6 @@ then
 		echo >> config.vars
 		echo "PROJECT_DIRECTORY='$project_directory'" >> config.vars
 	fi
-fi
-
-if [ $ONLY_CONFIG -gt 0 ]
-then
-	exit 0
 fi
 
 if [ $READ_CONFIG -gt 0 ]
