@@ -1,0 +1,32 @@
+.TH PIPEX-TESTER 1 "July 09, 2021"
+.SH NAME
+Pipex tester - A tester for the pipex project @42School.
+.SH SYNOPSYS
+.B ./run.sh
+[\fB-ct\fR]
+.SH DESCRIPTION
+This is a tester for the pipex project @42School.
+
+This tester was made by a student. Therefore, you should not take it as it is in defence.
+
+The tests create logs file in the \fBouts\fR folder. There are three types of file:
+
+- `test-xx.txt`: this is the outfile of pipex.
+
+- `test-xx-original.txt`: this is the outfile we would get with bash.
+
+- `test-xx-tty.txt`: this is what your program writes (`stdout` and `stderr`)
+
+.SH OPTIONS
+.TP
+.BR -c ", " --config
+Allow you to reconfigure the tester.
+
+.TP
+.BR -t ", " --disable-timeout
+Disable the timeout tests. May run the tests faster.
+
+This option is \fBdeprecated\fR since the timeout tests are now runned in background, and don't last longer than the actual test.
+
+.SH EXIT STATUS
+In case of success, the tester returns 0. If at least one test doesn't pass, it returns 1.
