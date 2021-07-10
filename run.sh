@@ -390,15 +390,22 @@ num=$(echo "$num 1" | awk '{printf "%02d", $1 + $2}')
 description="The output when infile's open error occur is correct"
 printf "${BLUE}# $num: %-69s  []${NC}" "$description"
 pipex_test $PROJECT_DIRECTORY/pipex "not-existing/deepthought.txt" "grep Now" "wc -w" "outs/test-$num.txt" > outs/test-$num-tty.txt 2>&1
+status_code=$?
 < /dev/null grep Now | wc -w > outs/test-$num-original.txt 2>&1
-if diff outs/test-$num-original.txt outs/test-$num.txt > /dev/null 2>&1
+if diff outs/test-$num-original.txt outs/test-$num.txt > /dev/null 2>&1 && [ $status_code -ne 143 ]
 then
 	TESTS_OK=$(($TESTS_OK + 1))
 	result="OK"
 	result_color=$GREEN
 else
-	TESTS_KO=$(($TESTS_KO + 1))
-	result="KO"
+	if [ $status_code -eq 143 ]
+	then
+		TESTS_TO=$(($TESTS_TO + 1))
+		result="TO"
+	else
+		TESTS_KO=$(($TESTS_KO + 1))
+		result="KO"
+	fi
 	result_color=$RED
 fi
 printf "\r${result_color}# $num: %-69s [%s]\n${NC}" "$description" "$result"
@@ -491,8 +498,9 @@ num=$(echo "$num 1" | awk '{printf "%02d", $1 + $2}')
 description="The program uses the environment list"
 printf "${BLUE}# $num: %-69s  []${NC}" "$description"
 PATH=$PWD:$PATH VAR1="hello" VAR2="world" pipex_test $PROJECT_DIRECTORY/pipex "/dev/null" "./assets/env_var.sh" "cat" "outs/test-$num.txt" > outs/test-$num-tty.txt 2>&1
+status_code=$?
 VAR1="hello" VAR2="world" ./assets/env_var.sh > outs/test-$num-original.txt 2>&1
-if diff outs/test-$num-original.txt outs/test-$num.txt > /dev/null 2>&1
+if diff outs/test-$num-original.txt outs/test-$num.txt > /dev/null 2>&1 && [ $status_code -ne 143 ]
 then
 	TESTS_OK=$(($TESTS_OK + 1))
 	result="OK"
@@ -544,15 +552,22 @@ num=$(echo "$num 1" | awk '{printf "%02d", $1 + $2}')
 description="The output of the command is correct"
 printf "${BLUE}# $num: %-69s  []${NC}" "$description"
 pipex_test $PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "cat" "ls" "outs/test-$num.txt" > outs/test-$num-tty.txt 2>&1
+status_code=$?
 < assets/deepthought.txt cat | ls > outs/test-$num-original.txt 2>&1
-if diff outs/test-$num-original.txt outs/test-$num.txt > /dev/null 2>&1
+if diff outs/test-$num-original.txt outs/test-$num.txt > /dev/null 2>&1 && [ $status_code -ne 143 ]
 then
 	TESTS_OK=$(($TESTS_OK + 1))
 	result="OK"
 	result_color=$GREEN
 else
-	TESTS_KO=$(($TESTS_KO + 1))
-	result="KO"
+	if [ $status_code -eq 143 ]
+	then
+		TESTS_TO=$(($TESTS_TO + 1))
+		result="TO"
+	else
+		TESTS_KO=$(($TESTS_KO + 1))
+		result="KO"
+	fi
 	result_color=$RED
 fi
 printf "\r${result_color}# $num: %-69s [%s]\n${NC}" "$description" "$result"
@@ -591,15 +606,22 @@ num=$(echo "$num 1" | awk '{printf "%02d", $1 + $2}')
 description="The output of the command is correct"
 printf "${BLUE}# $num: %-69s  []${NC}" "$description"
 pipex_test $PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "grep Now" "head -2" "outs/test-$num.txt" > outs/test-$num-tty.txt 2>&1
+status_code=$?
 < assets/deepthought.txt grep Now | head -2 > outs/test-$num-original.txt 2>&1
-if diff outs/test-$num-original.txt outs/test-$num.txt > /dev/null 2>&1
+if diff outs/test-$num-original.txt outs/test-$num.txt > /dev/null 2>&1 && [ $status_code -ne 143 ]
 then
 	TESTS_OK=$(($TESTS_OK + 1))
 	result="OK"
 	result_color=$GREEN
 else
-	TESTS_KO=$(($TESTS_KO + 1))
-	result="KO"
+	if [ $status_code -eq 143 ]
+	then
+		TESTS_TO=$(($TESTS_TO + 1))
+		result="TO"
+	else
+		TESTS_KO=$(($TESTS_KO + 1))
+		result="KO"
+	fi
 	result_color=$RED
 fi
 printf "\r${result_color}# $num: %-69s [%s]\n${NC}" "$description" "$result"
@@ -638,15 +660,22 @@ num=$(echo "$num 1" | awk '{printf "%02d", $1 + $2}')
 description="The output of the command is correct"
 printf "${BLUE}# $num: %-69s  []${NC}" "$description"
 pipex_test $PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "grep Now" "wc -w" "outs/test-$num.txt" > outs/test-$num-tty.txt 2>&1
+status_code=$?
 < assets/deepthought.txt grep Now | wc -w > outs/test-$num-original.txt 2>&1
-if diff outs/test-$num-original.txt outs/test-$num.txt > /dev/null 2>&1
+if diff outs/test-$num-original.txt outs/test-$num.txt > /dev/null 2>&1 && [ $status_code -ne 143 ]
 then
 	TESTS_OK=$(($TESTS_OK + 1))
 	result="OK"
 	result_color=$GREEN
 else
-	TESTS_KO=$(($TESTS_KO + 1))
-	result="KO"
+	if [ $status_code -eq 143 ]
+	then
+		TESTS_TO=$(($TESTS_TO + 1))
+		result="TO"
+	else
+		TESTS_KO=$(($TESTS_KO + 1))
+		result="KO"
+	fi
 	result_color=$RED
 fi
 printf "\r${result_color}# $num: %-69s [%s]\n${NC}" "$description" "$result"
@@ -688,17 +717,25 @@ num=$(echo "$num 1" | awk '{printf "%02d", $1 + $2}')
 description="The output of the command is correct"
 printf "${BLUE}# $num: %-69s  []${NC}" "$description"
 pipex_test $PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "grep Now" "cat" "outs/test-$num.txt" > outs/test-$num.0-tty.txt 2>&1
+status_code=$?
 pipex_test $PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "wc -w" "cat" "outs/test-$num.txt" > outs/test-$num.1-tty.txt 2>&1
+status_code2=$?
 < assets/deepthought.txt grep Now | cat > outs/test-$num-original.txt
 < assets/deepthought.txt wc -w | cat > outs/test-$num-original.txt
-if diff outs/test-$num-original.txt outs/test-$num.txt > /dev/null 2>&1
+if diff outs/test-$num-original.txt outs/test-$num.txt > /dev/null 2>&1 && [ $status_code -ne 143 ] && [ $status_code2 -ne 143 ]
 then
 	TESTS_OK=$(($TESTS_OK + 1))
 	result="OK"
 	result_color=$GREEN
 else
-	TESTS_KO=$(($TESTS_KO + 1))
-	result="KO"
+	if [ $status_code -eq 143 ] || [ $status_code2 -eq 143 ]
+	then
+		TESTS_TO=$(($TESTS_TO + 1))
+		result="TO"
+	else
+		TESTS_KO=$(($TESTS_KO + 1))
+		result="KO"
+	fi
 	result_color=$RED
 fi
 printf "\r${result_color}# $num: %-69s [%s]\n${NC}" "$description" "$result"
@@ -743,15 +780,23 @@ num=$(echo "$num 1" | awk '{printf "%02d", $1 + $2}')
 description="The output of the command contains 'command not found'"
 printf "${BLUE}# $num: %-69s  []${NC}" "$description"
 pipex_test $PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "notexisting" "wc" "outs/test-$num.txt" > outs/test-$num-tty.txt 2>&1
-if grep "command not found" outs/test-$num-tty.txt > /dev/null 2>&1
+status_code=$?
+if grep "command not found" outs/test-$num-tty.txt > /dev/null 2>&1 && [ $status_code -ne 143 ]
 then
 	TESTS_OK=$(($TESTS_OK + 1))
 	result="OK"
 	result_color=$GREEN
 else
-	TESTS_OK=$(($TESTS_OK + 1))
-	result="OK"
-	result_color=$YELLOW
+	if [ $status_code -eq 143 ]
+	then
+		TESTS_TO=$(($TESTS_TO + 1))
+		result="TO"
+		result_color=$RED
+	else
+		TESTS_OK=$(($TESTS_OK + 1))
+		result="OK"
+		result_color=$YELLOW
+	fi
 fi
 printf "\r${result_color}# $num: %-69s [%s]\n${NC}" "$description" "$result"
 
@@ -760,15 +805,22 @@ num=$(echo "$num 1" | awk '{printf "%02d", $1 + $2}')
 description="The output of the command is correct"
 printf "${BLUE}# $num: %-69s  []${NC}" "$description"
 pipex_test $PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "notexisting" "wc" "outs/test-$num.txt" > outs/test-$num-tty.txt 2>&1
+status_code=$?
 < /dev/null cat | wc > outs/test-$num-original.txt 2>&1
-if diff outs/test-$num-original.txt outs/test-$num.txt > /dev/null 2>&1
+if diff outs/test-$num-original.txt outs/test-$num.txt > /dev/null 2>&1 && [ $status_code -ne 143 ]
 then
 	TESTS_OK=$(($TESTS_OK + 1))
 	result="OK"
 	result_color=$GREEN
 else
-	TESTS_KO=$(($TESTS_KO + 1))
-	result="KO"
+	if [ $status_code -eq 143 ]
+	then
+		TESTS_TO=$(($TESTS_TO + 1))
+		result="TO"
+	else
+		TESTS_KO=$(($TESTS_KO + 1))
+		result="KO"
+	fi
 	result_color=$RED
 fi
 printf "\r${result_color}# $num: %-69s [%s]\n${NC}" "$description" "$result"
@@ -813,15 +865,23 @@ num=$(echo "$num 1" | awk '{printf "%02d", $1 + $2}')
 description="The output of the command contains 'command not found'"
 printf "${BLUE}# $num: %-69s  []${NC}" "$description"
 pipex_test $PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "cat" "notexisting" "outs/test-$num.txt" > outs/test-$num-tty.txt 2>&1
-if grep "command not found" outs/test-$num-tty.txt > /dev/null 2>&1
+status_code=$?
+if grep "command not found" outs/test-$num-tty.txt > /dev/null 2>&1 && [ $status_code -ne 143 ]
 then
 	TESTS_OK=$(($TESTS_OK + 1))
 	result="OK"
 	result_color=$GREEN
 else
-	TESTS_OK=$(($TESTS_OK + 1))
-	result="OK"
-	result_color=$YELLOW
+	if [ $status_code -eq 143 ]
+	then
+		TESTS_TO=$(($TESTS_TO + 1))
+		result="TO"
+		result_color=$RED
+	else
+		TESTS_OK=$(($TESTS_OK + 1))
+		result="OK"
+		result_color=$YELLOW
+	fi
 fi
 printf "\r${result_color}# $num: %-69s [%s]\n${NC}" "$description" "$result"
 
@@ -830,15 +890,22 @@ num=$(echo "$num 1" | awk '{printf "%02d", $1 + $2}')
 description="The output of the command is correct"
 printf "${BLUE}# $num: %-69s  []${NC}" "$description"
 pipex_test $PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "cat" "notexisting" "outs/test-$num.txt" > outs/test-$num-tty.txt 2>&1
+status_code=$?
 < assets/deepthought.txt cat | cat /dev/null > outs/test-$num-original.txt 2>&1
-if diff outs/test-$num-original.txt outs/test-$num.txt > /dev/null 2>&1
+if diff outs/test-$num-original.txt outs/test-$num.txt > /dev/null 2>&1 && [ $status_code -ne 143 ]
 then
 	TESTS_OK=$(($TESTS_OK + 1))
 	result="OK"
 	result_color=$GREEN
 else
-	TESTS_KO=$(($TESTS_KO + 1))
-	result="KO"
+	if [ $status_code -eq 143 ]
+	then
+		TESTS_TO=$(($TESTS_TO + 1))
+		result="TO"
+	else
+		TESTS_KO=$(($TESTS_KO + 1))
+		result="KO"
+	fi
 	result_color=$RED
 fi
 printf "\r${result_color}# $num: %-69s [%s]\n${NC}" "$description" "$result"
