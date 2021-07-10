@@ -64,7 +64,12 @@ pipex_summary()
 	printf "\n\n"
 	printf "\t${BOLD}Summary${NC}\n\n" > /dev/stdout
 	
-	printf "${GREEN}$TESTS_OK OK${NC} - ${RED}$TESTS_KO KO${NC} - ${RED}$TESTS_TO TO${NC}\n\n"
+	[ $TESTS_OK -gt 0 ] && printf "${GREEN}$TESTS_OK OK${NC}"
+	[ $TESTS_OK -gt 0 ] && [ $TESTS_KO -gt 0 ] && printf " - "
+	[ $TESTS_KO -gt 0 ] && printf "${RED}$TESTS_KO KO${NC}"
+	([ $TESTS_OK -gt 0 ] || [ $TESTS_KO -gt 0 ]) && [ $TESTS_TO -gt 0 ] && printf " - "
+	[ $TESTS_TO -gt 0 ] && printf "${RED}$TESTS_TO TO${NC}"
+	printf "\n\n"
 	
 	printf "${GREEN}OK${NC}: Test passed\n"
 	printf "${YELLOW}OK${NC}: Not opitmal or like bash (should not invalidate the project)\n"
