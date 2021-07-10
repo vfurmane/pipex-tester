@@ -34,7 +34,6 @@ wait_for_timeout()
 	sleep 2
 	if kill -0 $1 > /dev/null 2>&1
 	then
-		echo killing
 		kill $1
 	fi
 }
@@ -45,7 +44,6 @@ pipex_test()
 	then
 		"$@" &
 		bg_process=$!
-		echo $bg_process
 		wait_for_timeout $bg_process &
 		wait $bg_process
 	else
