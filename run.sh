@@ -27,6 +27,12 @@ fatal_error()
 	exit $exit_status
 }
 
+commands_needed=("awk" "sleep" "date" "awk" "dirname" "touch" "chmod" "ping" "git" "mkdir" "make" "nm" "grep" "wc" "cat" "ls" "head")
+for command_needed in "${commands_needed[@]}"
+do
+	command -v $command_needed || fatal_error "'$command_needed' command not installed... Aborting."
+done
+
 DISABLE_TIMEOUT=0
 
 wait_for_timeout()
