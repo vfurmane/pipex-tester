@@ -30,7 +30,7 @@ fatal_error()
 commands_needed=("awk" "sleep" "date" "awk" "dirname" "touch" "chmod" "ping" "git" "mkdir" "make" "nm" "grep" "wc" "cat" "ls" "head")
 for command_needed in "${commands_needed[@]}"
 do
-	command -v $command_needed || fatal_error "'$command_needed' command not installed... Aborting."
+	command -v $command_needed > /dev/null 2>&1 || fatal_error "'$command_needed' command not installed... Aborting."
 done
 
 DISABLE_TIMEOUT=0
@@ -139,7 +139,7 @@ do
 			DISABLE_TIMEOUT=1
 		shift;;
 		-u|--update)
-			FORCE_UPDATE=1
+			UPDATE=1
 		shift;;
 		*)
 		fatal_error "Unknown argument '$1'";;
@@ -207,7 +207,7 @@ then
 fi
 
 # Update
-if [ $FORCE_UPDATE -gt 0 ] || ([ $CHECK_UPDATE -gt 0 ] && should_update)
+if [ $UPDATE -gt 0 ] || ([ $CHECK_UPDATE -gt 0 ] && should_update)
 then
 	if ping -c 1 example.org > /dev/null 2>&1
 	then
