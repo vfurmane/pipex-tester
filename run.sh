@@ -35,7 +35,7 @@ done
 
 CONFIG=0
 READ_CONFIG=1
-UPDATE=1
+UPDATE=0
 
 prompt_configuration()
 {
@@ -217,6 +217,7 @@ fi
 # Update
 if [ $UPDATE -gt 0 ] || ([ $CHECK_UPDATE -gt 0 ] && should_update)
 then
+	echo "LAST_UPDATE=$(date +%s)" > .last-update
 	if ping -c 1 example.org > /dev/null 2>&1
 	then
 		if [ $(git status --porcelain 2> /dev/null | wc -l) -eq 0 ]
@@ -236,7 +237,6 @@ then
 					[nN]) update=0 ;;
 					[yY$'\n']) update=1 ;;
 				esac
-				echo "LAST_UPDATE=$(date +%s)" > .last-update
 				if [ "$update" != "0" ] && [ "$update" != "1" ]
 				then
 					printf "${YELLOW}Unexpected answer. Please retry...${NC}\n"
