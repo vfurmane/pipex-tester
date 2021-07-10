@@ -126,6 +126,7 @@ printf "\n\n"
 
 CONFIG=0
 READ_CONFIG=1
+UPDATE=1
 
 # Parse arguments
 while [ $# -gt 0 ]
@@ -136,6 +137,9 @@ do
 		shift;;
 		-t|--disable-timeout)
 			DISABLE_TIMEOUT=1
+		shift;;
+		-u|--update)
+			FORCE_UPDATE=1
 		shift;;
 		*)
 		fatal_error "Unknown argument '$1'";;
@@ -202,7 +206,8 @@ then
 	. config.vars
 fi
 
-if [ $CHECK_UPDATE -gt 0 ] && should_update
+# Update
+if [ $FORCE_UPDATE -gt 0 ] || ([ $CHECK_UPDATE -gt 0 ] && should_update)
 then
 	if ping -c 1 example.org > /dev/null 2>&1
 	then

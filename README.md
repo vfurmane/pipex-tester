@@ -52,6 +52,14 @@ Disable the timeout tests. May run the tests faster.
 ./run.sh -t
 ```
 
+#### -u | --update
+
+Force the tester to update (if needed only).
+
+```shell
+./run.sh -u
+```
+
 ## Troubleshooting
 
 If you encounter another problem, please feel free to open an Issue using the **GitHub**'s tab.
