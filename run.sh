@@ -119,7 +119,6 @@ should_update()
 			last_hour=$(echo "$(date +%s) 3600" | awk '{printf "%d", $1 - $2}')
 			if [ $LAST_UPDATE -le $last_hour ]
 			then
-				echo "LAST_UPDATE=$(date +%s)" > .last-update
 				return 0
 			else
 				return 1
@@ -128,7 +127,6 @@ should_update()
 			return 1
 		fi
 	else
-		echo "LAST_UPDATE=$(date +%s)" > .last-update
 		return 0
 	fi
 }
@@ -238,6 +236,7 @@ then
 					[nN]) update=0 ;;
 					[yY$'\n']) update=1 ;;
 				esac
+				echo "LAST_UPDATE=$(date +%s)" > .last-update
 				if [ "$update" != "0" ] && [ "$update" != "1" ]
 				then
 					printf "${YELLOW}Unexpected answer. Please retry...${NC}\n"
@@ -312,7 +311,7 @@ printf "\r${result_color}# $num: %-69s [%s]\n${NC}" "$description" "$result"
 num=$(echo "$num 1" | awk '{printf "%02d", $1 + $2}')
 description="The program doesn't use forbidden functions"
 printf "${BLUE}# $num: %-69s  []${NC}" "$description"
-nm -u $PROJECT_DIRECTORY/pipex | grep -Ev '(___error|___stack_chk_fail|___stack_chk_guard|access|close|dup|dup2|__errno_location|execve|exit|fork|free|__gmon_start__|__libc_start_main|malloc|open|perror|pipe|printf|read|strerror|unlink|wait|waitpid|write|dyld_stub_binder)(@|$)' > outs/test-$num-tty.txt 2>&1
+nm -u $PROJECT_DIRECTORY/pipex > /dev/null 2>&1 | grep -Ev '(___error|___stack_chk_fail|___stack_chk_guard|access|close|dup|dup2|__errno_location|execve|exit|fork|free|__gmon_start__|__libc_start_main|malloc|open|perror|pipe|printf|read|strerror|unlink|wait|waitpid|write|dyld_stub_binder)(@|$)' > outs/test-$num-tty.txt 2>&1
 status_code=$?
 if [ $status_code -eq 1 ]
 then
