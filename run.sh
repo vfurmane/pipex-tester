@@ -305,7 +305,7 @@ printf "\r${result_color}# $num: %-69s [%s]\n${NC}" "$description" "$result"
 num=$(echo "$num 1" | awk '{printf "%02d", $1 + $2}')
 description="The program exits with the last command's status code"
 printf "${BLUE}# $num: %-69s  []${NC}" "$description"
-PATH=$PWD:$PATH pipex_test $PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "grep Now" "./assets/exit.sh 5" "outs/test-$num.txt" > outs/test-$num-tty.txt 2>&1
+PATH=$PWD/assets:$PATH pipex_test $PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "grep Now" "exit 5" "outs/test-$num.txt" > outs/test-$num-tty.txt 2>&1
 if [ $status_code -le 128 ] # 128 is the last code that bash uses before signals
 then
 	TESTS_OK=$(($TESTS_OK + 1))
@@ -412,7 +412,7 @@ num=$(echo "$num 1" | awk '{printf "%02d", $1 + $2}')
 description="The program handles execve errors"
 printf "${BLUE}# $num: %-69s  []${NC}" "$description"
 chmod 644 assets/deepthought.txt
-PATH=$PWD:$PATH pipex_test $PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "cat" "./assets/not-executable" "outs/test-$num.txt" > outs/test-$num-tty.txt 2>&1
+PATH=$PWD/assets:$PATH pipex_test $PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "cat" "not-executable" "outs/test-$num.txt" > outs/test-$num-tty.txt 2>&1
 status_code=$?
 if [ $status_code -le 128 ] # 128 is the last code that bash uses before signals
 then
@@ -465,9 +465,9 @@ printf "\r${result_color}# $num: %-69s [%s]\n${NC}" "$description" "$result"
 num=$(echo "$num 1" | awk '{printf "%02d", $1 + $2}')
 description="The program uses the environment list"
 printf "${BLUE}# $num: %-69s  []${NC}" "$description"
-PATH=$PWD:$PATH VAR1="hello" VAR2="world" pipex_test $PROJECT_DIRECTORY/pipex "/dev/null" "./assets/env_var.sh" "cat" "outs/test-$num.txt" > outs/test-$num-tty.txt 2>&1
+PATH=$PWD/assets:$PATH VAR1="hello" VAR2="world" pipex_test $PROJECT_DIRECTORY/pipex "/dev/null" "env_var" "cat" "outs/test-$num.txt" > outs/test-$num-tty.txt 2>&1
 status_code=$?
-VAR1="hello" VAR2="world" ./assets/env_var.sh > outs/test-$num-original.txt 2>&1
+VAR1="hello" VAR2="world" ./assets/env_var > outs/test-$num-original.txt 2>&1
 if diff outs/test-$num-original.txt outs/test-$num.txt > /dev/null 2>&1 && [ $status_code -ne 143 ]
 then
 	TESTS_OK=$(($TESTS_OK + 1))
