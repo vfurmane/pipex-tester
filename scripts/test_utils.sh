@@ -33,10 +33,10 @@ pipex_summary()
 	[ $TESTS_OK -gt 0 ] && printf "${GREEN}$TESTS_OK OK${NC}"
 	[ $TESTS_OK -gt 0 ] && [ $TESTS_KO -gt 0 ] && printf " - "
 	[ $TESTS_KO -gt 0 ] && printf "${RED}$TESTS_KO KO${NC}"
-	([ $TESTS_OK -gt 0 ] || [ $TESTS_KO -gt 0 ]) && [ $TESTS_TO -gt 0 ] && printf " - "
-	[ $TESTS_TO -gt 0 ] && printf "${RED}$TESTS_TO TO${NC}"
-	([ $TESTS_OK -gt 0 ] || [ $TESTS_KO -gt 0 ] || [ $TESTS_TO -gt 0 ]) && [ $TESTS_LK -gt 0 ] && printf " - "
+	([ $TESTS_OK -gt 0 ] || [ $TESTS_KO -gt 0 ]) && [ $TESTS_LK -gt 0 ] && printf " - "
 	[ $TESTS_LK -gt 0 ] && printf "${RED}$TESTS_LK LK${NC}"
+	([ $TESTS_OK -gt 0 ] || [ $TESTS_KO -gt 0 ] || [ $TESTS_LK -gt 0 ]) && [ $TESTS_TO -gt 0 ] && printf " - "
+	[ $TESTS_TO -gt 0 ] && printf "${RED}$TESTS_TO TO${NC}"
 	printf "\n\n"
 	
 	printf "${GREEN}OK${NC}: Test passed\n"
@@ -45,7 +45,7 @@ pipex_summary()
 	printf "${RED}LK${NC}: Test detected leaks\n"
 	printf "${RED}TO${NC}: Test timed out\n"
 	
-	if [ $TESTS_KO -eq 0 ] && [ $TESTS_TO -eq 0 ]
+	if [ $TESTS_KO -eq 0 ] && [ $TESTS_LK -eq 0 ] && [ $TESTS_TO -eq 0 ]
 	then
 		exit 0
 	else
