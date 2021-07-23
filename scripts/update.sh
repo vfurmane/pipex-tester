@@ -23,12 +23,8 @@ should_update()
 
 update_tester()
 {
-	if [ $(git status --porcelain 2> /dev/null | wc -l) -eq 0 ]
-	then
-		git fetch origin master > /dev/null 2>&1
-	fi
-	if ! git diff-index --quiet origin/master -- \
-	&& [ $(git status --porcelain 2> /dev/null | wc -l) -eq 0 ]
+	git fetch origin master > /dev/null 2>&1
+	if [ "$(git log --format='%H' -n 1 origin/master)" -ne "$(git log --format='%H' -n 1 master)" ]
 	then
 		update=-1
 		while [ $update -ne 0 ] && [ $update -ne 1 ]
