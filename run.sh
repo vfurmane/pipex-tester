@@ -88,10 +88,15 @@ LEAK_RETURN=240
 if ! command -v valgrind > /dev/null 2>&1
 then
 	printf "${YELLOW}valgrind is not installed. Memory leaks detection is not enabled...${NC}\n"
+	LEAKS=0
+elif [[ "$OSTYPE" == "darwin"* ]]
+then
+	printf "${YELLOW}Memory leaks detection has been disabled on Darwin plateforms...${NC}\n"
+	LEAKS=0
 else
 	if [ $LEAKS -gt 0 ]
 	then
-		MEMLEAKS="valgrind --leak-check=full --show-leak-kinds=all --undef-value-errors=no --error-exitcode=$LEAK_RETURN --errors-for-leak-kinds=all"
+		MEMLEAKS="valgrind --show-leak-kinds=all --undef-value-errors=no --error-exitcode=$LEAK_RETURN --errors-for-leak-kinds=all"
 	fi
 fi
 
