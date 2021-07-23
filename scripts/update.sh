@@ -34,7 +34,12 @@ update_tester()
 		while [ $update -ne 0 ] && [ $update -ne 1 ]
 		do
 			printf "Would you like to update the tester [Y/n] "
-			read -N 1 -r update
+			nchars_opt="-N"
+			if [[ "$OSTYPE" == "darwin"* ]]
+			then
+				nchars_opt="-n"
+			fi
+			read $nchars_opt 1 -r update
 			[[ "$update" != $'\n' ]] && echo
 			case "$update" in
 				[nN]) update=0 ;;
