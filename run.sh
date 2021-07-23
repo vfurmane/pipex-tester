@@ -36,6 +36,7 @@ done
 cd "$(dirname "$0")"
 
 CONFIG=0
+LEAKS=1
 READ_CONFIG=1
 UPDATE=0
 
@@ -68,6 +69,9 @@ do
 		-c|--config)
 			CONFIG=1
 		shift;;
+		-l|--no-leaks)
+			LEAKS=0
+		shift;;
 		-t|--disable-timeout)
 			DISABLE_TIMEOUT=1
 		shift;;
@@ -85,7 +89,10 @@ if ! command -v valgrind > /dev/null 2>&1
 then
 	printf "${YELLOW}valgrind is not installed. Memory leaks detection is not enabled...${NC}\n"
 else
-	MEMLEAKS="valgrind --leak-check=full --show-leak-kinds=all --undef-value-errors=no --error-exitcode=$LEAK_RETURN --errors-for-leak-kinds=all"
+	if [ $LEAKS -gt 0 ]
+	then
+		MEMLEAKS="valgrind --leak-check=full --show-leak-kinds=all --undef-value-errors=no --error-exitcode=$LEAK_RETURN --errors-for-leak-kinds=all"
+	fi
 fi
 
 # Config

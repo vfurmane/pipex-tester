@@ -44,6 +44,14 @@ Allow you to reconfigure the tester.
 ./run.sh -c
 ```
 
+#### -l | --no-leaks
+
+Disable the leaks tests.
+
+```shell
+./run.sh -l
+```
+
 #### -t | --disable-timeout
 
 Disable the timeout tests. May run the tests faster.
