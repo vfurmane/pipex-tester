@@ -44,6 +44,7 @@ source scripts/config.sh
 DISABLE_TIMEOUT=0
 TESTS_OK=0
 TESTS_KO=0
+TESTS_LK=0
 TESTS_TO=0
 exec 3>&1
 
@@ -77,6 +78,15 @@ do
 		fatal_error "Unknown argument '$1'";;
 	esac
 done
+
+MEMLEAKS=""
+LEAK_RETURN=240
+if ! command -v valgrind > /dev/null 2>&1
+then
+	printf "${YELLOW}valgrind is not installed. Memory leaks detection is not enabled...${NC}\n"
+else
+	MEMLEAKS="valgrind --leak-check=full --show-leak-kinds=all --undef-value-errors=no --error-exitcode=$LEAK_RETURN --errors-for-leak-kinds=all"
+fi
 
 # Config
 if ! [ -f config.vars ] || [ $CONFIG -gt 0 ]
@@ -131,7 +141,7 @@ num="00"
 num=$(echo "$num 1" | awk '{printf "%02d", $1 + $2}')
 description="The program compiles"
 printf "${BLUE}# $num: %-69s  []${NC}" "$description"
-pipex_test make -C $PROJECT_DIRECTORY > outs/test-$num.txt 2>&1
+make -C $PROJECT_DIRECTORY > outs/test-$num.txt 2>&1
 status_code=$?
 if [ $status_code -eq 0 ]
 then
@@ -139,14 +149,8 @@ then
 	result="OK"
 	result_color=$GREEN
 else
-	if [ $status_code -eq 143 ]
-	then
-		TESTS_TO=$(($TESTS_TO + 1))
-		result="TO"
-	else
-		TESTS_KO=$(($TESTS_KO + 1))
-		result="KO"
-	fi
+	TESTS_KO=$(($TESTS_KO + 1))
+	result="KO"
 	result_color=$RED
 fi
 printf "\r${result_color}# $num: %-69s [%s]\n${NC}" "$description" "$result"
@@ -206,6 +210,10 @@ else
 	then
 		TESTS_TO=$(($TESTS_TO + 1))
 		result="TO"
+	elif [ $status_code -eq $LEAK_RETURN ]
+	then
+		TESTS_LK=$(($TESTS_LK + 1))
+		result="LK"
 	else
 		TESTS_KO=$(($TESTS_KO + 1))
 		result="KO"
@@ -235,6 +243,10 @@ else
 	then
 		TESTS_TO=$(($TESTS_TO + 1))
 		result="TO"
+	elif [ $status_code -eq $LEAK_RETURN ]
+	then
+		TESTS_LK=$(($TESTS_LK + 1))
+		result="LK"
 	else
 		TESTS_KO=$(($TESTS_KO + 1))
 		result="KO"
@@ -264,6 +276,10 @@ else
 	then
 		TESTS_TO=$(($TESTS_TO + 1))
 		result="TO"
+	elif [ $status_code -eq $LEAK_RETURN ]
+	then
+		TESTS_LK=$(($TESTS_LK + 1))
+		result="LK"
 	else
 		TESTS_KO=$(($TESTS_KO + 1))
 		result="KO"
@@ -293,6 +309,10 @@ else
 	then
 		TESTS_TO=$(($TESTS_TO + 1))
 		result="TO"
+	elif [ $status_code -eq $LEAK_RETURN ]
+	then
+		TESTS_LK=$(($TESTS_LK + 1))
+		result="LK"
 	else
 		TESTS_KO=$(($TESTS_KO + 1))
 		result="KO"
@@ -321,6 +341,10 @@ else
 	then
 		TESTS_TO=$(($TESTS_TO + 1))
 		result="TO"
+	elif [ $status_code -eq $LEAK_RETURN ]
+	then
+		TESTS_LK=$(($TESTS_LK + 1))
+		result="LK"
 	else
 		TESTS_KO=$(($TESTS_KO + 1))
 		result="KO"
@@ -345,6 +369,10 @@ else
 	then
 		TESTS_TO=$(($TESTS_TO + 1))
 		result="TO"
+	elif [ $status_code -eq $LEAK_RETURN ]
+	then
+		TESTS_LK=$(($TESTS_LK + 1))
+		result="LK"
 	else
 		TESTS_KO=$(($TESTS_KO + 1))
 		result="KO"
@@ -370,6 +398,10 @@ else
 	then
 		TESTS_TO=$(($TESTS_TO + 1))
 		result="TO"
+	elif [ $status_code -eq $LEAK_RETURN ]
+	then
+		TESTS_LK=$(($TESTS_LK + 1))
+		result="LK"
 	else
 		TESTS_KO=$(($TESTS_KO + 1))
 		result="KO"
@@ -399,6 +431,10 @@ else
 	then
 		TESTS_TO=$(($TESTS_TO + 1))
 		result="TO"
+	elif [ $status_code -eq $LEAK_RETURN ]
+	then
+		TESTS_LK=$(($TESTS_LK + 1))
+		result="LK"
 	else
 		TESTS_KO=$(($TESTS_KO + 1))
 		result="KO"
@@ -429,6 +465,10 @@ else
 	then
 		TESTS_TO=$(($TESTS_TO + 1))
 		result="TO"
+	elif [ $status_code -eq $LEAK_RETURN ]
+	then
+		TESTS_LK=$(($TESTS_LK + 1))
+		result="LK"
 	else
 		TESTS_KO=$(($TESTS_KO + 1))
 		result="KO"
@@ -453,6 +493,10 @@ else
 	then
 		TESTS_TO=$(($TESTS_TO + 1))
 		result="TO"
+	elif [ $status_code -eq $LEAK_RETURN ]
+	then
+		TESTS_LK=$(($TESTS_LK + 1))
+		result="LK"
 	else
 		TESTS_KO=$(($TESTS_KO + 1))
 		result="KO"
@@ -478,6 +522,10 @@ else
 	then
 		TESTS_TO=$(($TESTS_TO + 1))
 		result="TO"
+	elif [ $status_code -eq $LEAK_RETURN ]
+	then
+		TESTS_LK=$(($TESTS_LK + 1))
+		result="LK"
 	else
 		TESTS_KO=$(($TESTS_KO + 1))
 		result="KO"
@@ -507,6 +555,10 @@ else
 	then
 		TESTS_TO=$(($TESTS_TO + 1))
 		result="TO"
+	elif [ $status_code -eq $LEAK_RETURN ]
+	then
+		TESTS_LK=$(($TESTS_LK + 1))
+		result="LK"
 	else
 		TESTS_KO=$(($TESTS_KO + 1))
 		result="KO"
@@ -532,6 +584,10 @@ else
 	then
 		TESTS_TO=$(($TESTS_TO + 1))
 		result="TO"
+	elif [ $status_code -eq $LEAK_RETURN ]
+	then
+		TESTS_LK=$(($TESTS_LK + 1))
+		result="LK"
 	else
 		TESTS_KO=$(($TESTS_KO + 1))
 		result="KO"
@@ -561,6 +617,10 @@ else
 	then
 		TESTS_TO=$(($TESTS_TO + 1))
 		result="TO"
+	elif [ $status_code -eq $LEAK_RETURN ]
+	then
+		TESTS_LK=$(($TESTS_LK + 1))
+		result="LK"
 	else
 		TESTS_KO=$(($TESTS_KO + 1))
 		result="KO"
@@ -586,6 +646,10 @@ else
 	then
 		TESTS_TO=$(($TESTS_TO + 1))
 		result="TO"
+	elif [ $status_code -eq $LEAK_RETURN ]
+	then
+		TESTS_LK=$(($TESTS_LK + 1))
+		result="LK"
 	else
 		TESTS_KO=$(($TESTS_KO + 1))
 		result="KO"
@@ -615,6 +679,10 @@ else
 	then
 		TESTS_TO=$(($TESTS_TO + 1))
 		result="TO"
+	elif [ $status_code -eq $LEAK_RETURN ]
+	then
+		TESTS_LK=$(($TESTS_LK + 1))
+		result="LK"
 	else
 		TESTS_KO=$(($TESTS_KO + 1))
 		result="KO"
@@ -640,6 +708,10 @@ else
 	then
 		TESTS_TO=$(($TESTS_TO + 1))
 		result="TO"
+	elif [ $status_code -eq $LEAK_RETURN ]
+	then
+		TESTS_LK=$(($TESTS_LK + 1))
+		result="LK"
 	else
 		TESTS_KO=$(($TESTS_KO + 1))
 		result="KO"
@@ -672,6 +744,10 @@ else
 	then
 		TESTS_TO=$(($TESTS_TO + 1))
 		result="TO"
+	elif [ $status_code -eq $LEAK_RETURN ]
+	then
+		TESTS_LK=$(($TESTS_LK + 1))
+		result="LK"
 	else
 		TESTS_KO=$(($TESTS_KO + 1))
 		result="KO"
@@ -700,6 +776,10 @@ else
 	then
 		TESTS_TO=$(($TESTS_TO + 1))
 		result="TO"
+	elif [ $status_code -eq $LEAK_RETURN ]
+	then
+		TESTS_LK=$(($TESTS_LK + 1))
+		result="LK"
 	else
 		TESTS_KO=$(($TESTS_KO + 1))
 		result="KO"
@@ -735,6 +815,10 @@ else
 	then
 		TESTS_TO=$(($TESTS_TO + 1))
 		result="TO"
+	elif [ $status_code -eq $LEAK_RETURN ]
+	then
+		TESTS_LK=$(($TESTS_LK + 1))
+		result="LK"
 	else
 		TESTS_KO=$(($TESTS_KO + 1))
 		result="KO"
@@ -759,6 +843,10 @@ else
 	then
 		TESTS_TO=$(($TESTS_TO + 1))
 		result="TO"
+	elif [ $status_code -eq $LEAK_RETURN ]
+	then
+		TESTS_LK=$(($TESTS_LK + 1))
+		result="LK"
 		result_color=$RED
 	else
 		TESTS_OK=$(($TESTS_OK + 1))
@@ -785,6 +873,10 @@ else
 	then
 		TESTS_TO=$(($TESTS_TO + 1))
 		result="TO"
+	elif [ $status_code -eq $LEAK_RETURN ]
+	then
+		TESTS_LK=$(($TESTS_LK + 1))
+		result="LK"
 	else
 		TESTS_KO=$(($TESTS_KO + 1))
 		result="KO"
@@ -820,6 +912,10 @@ else
 	then
 		TESTS_TO=$(($TESTS_TO + 1))
 		result="TO"
+	elif [ $status_code -eq $LEAK_RETURN ]
+	then
+		TESTS_LK=$(($TESTS_LK + 1))
+		result="LK"
 	else
 		TESTS_KO=$(($TESTS_KO + 1))
 		result="KO"
@@ -844,6 +940,10 @@ else
 	then
 		TESTS_TO=$(($TESTS_TO + 1))
 		result="TO"
+	elif [ $status_code -eq $LEAK_RETURN ]
+	then
+		TESTS_LK=$(($TESTS_LK + 1))
+		result="LK"
 		result_color=$RED
 	else
 		TESTS_OK=$(($TESTS_OK + 1))
@@ -870,6 +970,10 @@ else
 	then
 		TESTS_TO=$(($TESTS_TO + 1))
 		result="TO"
+	elif [ $status_code -eq $LEAK_RETURN ]
+	then
+		TESTS_LK=$(($TESTS_LK + 1))
+		result="LK"
 	else
 		TESTS_KO=$(($TESTS_KO + 1))
 		result="KO"
@@ -899,6 +1003,10 @@ else
 	then
 		TESTS_TO=$(($TESTS_TO + 1))
 		result="TO"
+	elif [ $status_code -eq $LEAK_RETURN ]
+	then
+		TESTS_LK=$(($TESTS_LK + 1))
+		result="LK"
 	else
 		TESTS_KO=$(($TESTS_KO + 1))
 		result="KO"
