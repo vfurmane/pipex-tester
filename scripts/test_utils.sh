@@ -40,7 +40,7 @@ pipex_summary()
 	printf "\n\n"
 	
 	printf "${GREEN}OK${NC}: Test passed\n"
-	printf "${YELLOW}OK${NC}: Not opitmal or like bash (should not invalidate the project)\n"
+	printf "${YELLOW}OK${NC}: Not optimal or like bash (should not invalidate the project)\n"
 	printf "${RED}KO${NC}: Test did not pass\n"
 	printf "${RED}LK${NC}: Test detected leaks\n"
 	printf "${RED}TO${NC}: Test timed out\n"
