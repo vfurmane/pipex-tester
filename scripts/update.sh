@@ -49,7 +49,7 @@ update_tester()
 		done
 		if [ $update -eq 1 ]
 		then
-			git pull origin master
+			git pull --no-edit origin master
 		fi
 	fi
 }
