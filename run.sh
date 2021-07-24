@@ -96,7 +96,7 @@ then
 else
 	if [ $LEAKS -gt 0 ]
 	then
-		MEMLEAKS="valgrind --show-leak-kinds=all --undef-value-errors=no --error-exitcode=$LEAK_RETURN --errors-for-leak-kinds=all"
+		MEMLEAKS="valgrind --leak-check=full --show-leak-kinds=all --undef-value-errors=no --error-exitcode=$LEAK_RETURN --errors-for-leak-kinds=all"
 	fi
 fi
 
