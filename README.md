@@ -16,6 +16,10 @@ git clone https://github.com/vfurmane/pipex-tester
 
 ## Usage
 
+```shell
+./run.sh [-cltu] [tests_no]
+```
+
 Once the installation is done, `cd` into the tester's directory, and run the `./run.sh` script. You should be prompted some configuration questions. If you have answered any of them incorrectly, you can execute `./run.sh -c` or `./run.sh --config` to be prompted the questions again.
 
 To stop the tester earlier, you can press Ctrl-C, and it will show you your grade at that moment.
@@ -35,6 +39,14 @@ man ./man/man1/pipex-tester.1
 ```
 
 ### Arguments
+
+#### test number
+
+Run the specified tests.
+
+```shell
+./run.sh 1 2 3
+```
 
 #### -c | --config
 
