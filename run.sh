@@ -480,8 +480,6 @@ description="The program handles outfile's open error"
 printf "${BLUE}# $num: %-69s  []${NC}" "$description"
 if [ ${#test_suites[@]} -eq 0 ] || [[ "${test_suites[@]}" =~ "${num##0}" ]]
 then
-	description="The program handles outfile's open error"
-	printf "${BLUE}# $num: %-69s  []${NC}" "$description"
 	pipex_test $PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "grep Now" "wc -w" "not-existing/test-$num.txt" > outs/test-$num-tty.txt 2>&1
 	status_code=$?
 	if [ $status_code -le 128 ] # 128 is the last code that bash uses before signals
