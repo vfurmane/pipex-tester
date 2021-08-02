@@ -27,6 +27,23 @@ fatal_error()
 	exit $exit_status
 }
 
+function should_execute()
+{
+	ref=$1
+	shift
+	tests=("$@")
+	if [ ${#tests} -eq 0 ]
+	then
+		return 0
+	else
+		for test_number in "${tests[@]}"
+		do
+			if [ "$ref" == "$test_number" ]; then return 0; fi
+		done
+	fi
+	return 1
+}
+
 commands_needed=("awk" "sleep" "date" "awk" "dirname" "touch" "chmod" "ping" "git" "mkdir" "make" "nm" "grep" "wc" "cat" "ls" "head")
 for command_needed in "${commands_needed[@]}"
 do
@@ -82,8 +99,6 @@ do
 		break;;
 	esac
 done
-
-test_suites=("$@")
 
 MEMLEAKS=""
 LEAK_RETURN=240
@@ -150,12 +165,13 @@ printf "\n"
 printf "\t${BOLD}Tests${NC}\n\n"
 trap pipex_summary SIGINT
 num="00"
+test_suites=("$@")
 
 # TEST
 num=$(echo "$num 1" | awk '{printf "%02d", $1 + $2}')
 description="The program compiles"
 printf "${BLUE}# $num: %-69s  []${NC}" "$description"
-if [ ${#test_suites[@]} -eq 0 ] || [[ "${test_suites[@]}" =~ "${num##0}" ]]
+if should_execute "${num##0}" "${test_suites[@]}"
 then
 	make -C $PROJECT_DIRECTORY > outs/test-$num.txt 2>&1
 	status_code=$?
@@ -178,7 +194,7 @@ fi
 num=$(echo "$num 1" | awk '{printf "%02d", $1 + $2}')
 description="The program is executable as ./pipex"
 printf "${BLUE}# $num: %-69s  []${NC}" "$description"
-if [ ${#test_suites[@]} -eq 0 ] || [[ "${test_suites[@]}" =~ "${num##0}" ]]
+if should_execute ${num##0} ${test_suites[@]}
 then
 	if [ -x $PROJECT_DIRECTORY/pipex ]
 	then
@@ -199,7 +215,7 @@ fi
 num=$(echo "$num 1" | awk '{printf "%02d", $1 + $2}')
 description="The program doesn't use forbidden functions"
 printf "${BLUE}# $num: %-69s  []${NC}" "$description"
-if [ ${#test_suites[@]} -eq 0 ] || [[ "${test_suites[@]}" =~ "${num##0}" ]]
+if should_execute ${num##0} ${test_suites[@]}
 then
 	nm -u $PROJECT_DIRECTORY/pipex > /dev/null 2>&1 | grep -Ev '(___error|___stack_chk_fail|___stack_chk_guard|access|close|dup|dup2|__errno_location|execve|exit|fork|free|__gmon_start__|__libc_start_main|malloc|open|perror|pipe|printf|read|strerror|unlink|wait|waitpid|write|dyld_stub_binder)(@|$)' > outs/test-$num-tty.txt 2>&1
 	status_code=$?
@@ -222,7 +238,7 @@ fi
 num=$(echo "$num 1" | awk '{printf "%02d", $1 + $2}')
 description="The program does not crash with no parameters"
 printf "${BLUE}# $num: %-69s  []${NC}" "$description"
-if [ ${#test_suites[@]} -eq 0 ] || [[ "${test_suites[@]}" =~ "${num##0}" ]]
+if should_execute ${num##0} ${test_suites[@]}
 then
 	pipex_test $PROJECT_DIRECTORY/pipex > outs/test-$num-tty.txt 2>&1
 	status_code=$?
@@ -260,7 +276,7 @@ fi
 num=$(echo "$num 1" | awk '{printf "%02d", $1 + $2}')
 description="The program does not crash with one parameter"
 printf "${BLUE}# $num: %-69s  []${NC}" "$description"
-if [ ${#test_suites[@]} -eq 0 ] || [[ "${test_suites[@]}" =~ "${num##0}" ]]
+if should_execute ${num##0} ${test_suites[@]}
 then
 	pipex_test $PROJECT_DIRECTORY/pipex "assets/deepthought.txt" > outs/test-$num-tty.txt 2>&1
 	status_code=$?
@@ -298,7 +314,7 @@ fi
 num=$(echo "$num 1" | awk '{printf "%02d", $1 + $2}')
 description="The program does not crash with two parameters"
 printf "${BLUE}# $num: %-69s  []${NC}" "$description"
-if [ ${#test_suites[@]} -eq 0 ] || [[ "${test_suites[@]}" =~ "${num##0}" ]]
+if should_execute ${num##0} ${test_suites[@]}
 then
 	pipex_test $PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "grep Now" > outs/test-$num-tty.txt 2>&1
 	status_code=$?
@@ -336,7 +352,7 @@ fi
 num=$(echo "$num 1" | awk '{printf "%02d", $1 + $2}')
 description="The program does not crash with three parameters"
 printf "${BLUE}# $num: %-69s  []${NC}" "$description"
-if [ ${#test_suites[@]} -eq 0 ] || [[ "${test_suites[@]}" =~ "${num##0}" ]]
+if should_execute ${num##0} ${test_suites[@]}
 then
 	pipex_test $PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "grep Now" "wc -w" > outs/test-$num-tty.txt 2>&1
 	status_code=$?
@@ -374,7 +390,7 @@ fi
 num=$(echo "$num 1" | awk '{printf "%02d", $1 + $2}')
 description="The program exits with the last command's status code"
 printf "${BLUE}# $num: %-69s  []${NC}" "$description"
-if [ ${#test_suites[@]} -eq 0 ] || [[ "${test_suites[@]}" =~ "${num##0}" ]]
+if should_execute ${num##0} ${test_suites[@]}
 then
 	PATH=$PWD/assets:$PATH pipex_test $PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "grep Now" "exit 5" "outs/test-$num.txt" > outs/test-$num-tty.txt 2>&1
 	if [ $status_code -le 128 ] # 128 is the last code that bash uses before signals
@@ -411,7 +427,7 @@ fi
 num=$(echo "$num 1" | awk '{printf "%02d", $1 + $2}')
 description="The program handles infile's open error"
 printf "${BLUE}# $num: %-69s  []${NC}" "$description"
-if [ ${#test_suites[@]} -eq 0 ] || [[ "${test_suites[@]}" =~ "${num##0}" ]]
+if should_execute ${num##0} ${test_suites[@]}
 then
 	pipex_test $PROJECT_DIRECTORY/pipex "not-existing/deepthought.txt" "grep Now" "wc -w" "outs/test-$num.txt" > outs/test-$num-tty.txt 2>&1
 	status_code=$?
@@ -444,7 +460,7 @@ fi
 num=$(echo "$num 1" | awk '{printf "%02d", $1 + $2}')
 description="The output when infile's open error occur is correct"
 printf "${BLUE}# $num: %-69s  []${NC}" "$description"
-if [ ${#test_suites[@]} -eq 0 ] || [[ "${test_suites[@]}" =~ "${num##0}" ]]
+if should_execute ${num##0} ${test_suites[@]}
 then
 	pipex_test $PROJECT_DIRECTORY/pipex "not-existing/deepthought.txt" "grep Now" "wc -w" "outs/test-$num.txt" > outs/test-$num-tty.txt 2>&1
 	status_code=$?
@@ -478,7 +494,7 @@ fi
 num=$(echo "$num 1" | awk '{printf "%02d", $1 + $2}')
 description="The program handles outfile's open error"
 printf "${BLUE}# $num: %-69s  []${NC}" "$description"
-if [ ${#test_suites[@]} -eq 0 ] || [[ "${test_suites[@]}" =~ "${num##0}" ]]
+if should_execute ${num##0} ${test_suites[@]}
 then
 	pipex_test $PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "grep Now" "wc -w" "not-existing/test-$num.txt" > outs/test-$num-tty.txt 2>&1
 	status_code=$?
@@ -516,7 +532,7 @@ fi
 num=$(echo "$num 1" | awk '{printf "%02d", $1 + $2}')
 description="The program handles execve errors"
 printf "${BLUE}# $num: %-69s  []${NC}" "$description"
-if [ ${#test_suites[@]} -eq 0 ] || [[ "${test_suites[@]}" =~ "${num##0}" ]]
+if should_execute ${num##0} ${test_suites[@]}
 then
 	chmod 644 assets/deepthought.txt
 	PATH=$PWD/assets:$PATH pipex_test $PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "cat" "not-executable" "outs/test-$num.txt" > outs/test-$num-tty.txt 2>&1
@@ -555,7 +571,7 @@ fi
 num=$(echo "$num 1" | awk '{printf "%02d", $1 + $2}')
 description="The program handles path that doesn't exist"
 printf "${BLUE}# $num: %-69s  []${NC}" "$description"
-if [ ${#test_suites[@]} -eq 0 ] || [[ "${test_suites[@]}" =~ "${num##0}" ]]
+if should_execute ${num##0} ${test_suites[@]}
 then
 	PATH=/not/existing:$PATH pipex_test $PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "grep Now" "wc -w" "outs/test-$num.txt" > outs/test-$num-tty.txt 2>&1
 	status_code=$?
@@ -588,7 +604,7 @@ fi
 num=$(echo "$num 1" | awk '{printf "%02d", $1 + $2}')
 description="The program uses the environment list"
 printf "${BLUE}# $num: %-69s  []${NC}" "$description"
-if [ ${#test_suites[@]} -eq 0 ] || [[ "${test_suites[@]}" =~ "${num##0}" ]]
+if should_execute ${num##0} ${test_suites[@]}
 then
 	PATH=$PWD/assets:$PATH VAR1="hello" VAR2="world" pipex_test $PROJECT_DIRECTORY/pipex "/dev/null" "env_var" "cat" "outs/test-$num.txt" > outs/test-$num-tty.txt 2>&1
 	status_code=$?
@@ -627,7 +643,7 @@ printf "$PROJECT_DIRECTORY/pipex \"assets/deepthought.txt\" \"cat\" \"ls\" \"out
 num=$(echo "$num 1" | awk '{printf "%02d", $1 + $2}')
 description="The program handles the command"
 printf "${BLUE}# $num: %-69s  []${NC}" "$description"
-if [ ${#test_suites[@]} -eq 0 ] || [[ "${test_suites[@]}" =~ "${num##0}" ]]
+if should_execute ${num##0} ${test_suites[@]}
 then
 	pipex_test $PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "cat" "ls" "outs/test-$num.txt" > outs/test-$num-tty.txt 2>&1
 	status_code=$?
@@ -659,7 +675,7 @@ fi
 num=$(echo "$num 1" | awk '{printf "%02d", $1 + $2}')
 description="The output of the command is correct"
 printf "${BLUE}# $num: %-69s  []${NC}" "$description"
-if [ ${#test_suites[@]} -eq 0 ] || [[ "${test_suites[@]}" =~ "${num##0}" ]]
+if should_execute ${num##0} ${test_suites[@]}
 then
 	pipex_test $PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "cat" "ls" "outs/test-$num.txt" > outs/test-$num-tty.txt 2>&1
 	status_code=$?
@@ -698,7 +714,7 @@ printf "$PROJECT_DIRECTORY/pipex \"assets/deepthought.txt\" \"grep Now\" \"head 
 num=$(echo "$num 1" | awk '{printf "%02d", $1 + $2}')
 description="The program handles the command"
 printf "${BLUE}# $num: %-69s  []${NC}" "$description"
-if [ ${#test_suites[@]} -eq 0 ] || [[ "${test_suites[@]}" =~ "${num##0}" ]]
+if should_execute ${num##0} ${test_suites[@]}
 then
 	pipex_test $PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "grep Now" "head -2" "outs/test-$num.txt" > outs/test-$num-tty.txt 2>&1
 	status_code=$?
@@ -731,7 +747,7 @@ fi
 num=$(echo "$num 1" | awk '{printf "%02d", $1 + $2}')
 description="The output of the command is correct"
 printf "${BLUE}# $num: %-69s  []${NC}" "$description"
-if [ ${#test_suites[@]} -eq 0 ] || [[ "${test_suites[@]}" =~ "${num##0}" ]]
+if should_execute ${num##0} ${test_suites[@]}
 then
 	pipex_test $PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "grep Now" "head -2" "outs/test-$num.txt" > outs/test-$num-tty.txt 2>&1
 	status_code=$?
@@ -770,7 +786,7 @@ printf "$PROJECT_DIRECTORY/pipex \"assets/deepthought.txt\" \"grep Now\" \"wc -w
 num=$(echo "$num 1" | awk '{printf "%02d", $1 + $2}')
 description="The program handles the command"
 printf "${BLUE}# $num: %-69s  []${NC}" "$description"
-if [ ${#test_suites[@]} -eq 0 ] || [[ "${test_suites[@]}" =~ "${num##0}" ]]
+if should_execute ${num##0} ${test_suites[@]}
 then
 	pipex_test $PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "grep Now" "wc -w" "outs/test-$num.txt" > outs/test-$num-tty.txt 2>&1
 	status_code=$?
@@ -803,7 +819,7 @@ fi
 num=$(echo "$num 1" | awk '{printf "%02d", $1 + $2}')
 description="The output of the command is correct"
 printf "${BLUE}# $num: %-69s  []${NC}" "$description"
-if [ ${#test_suites[@]} -eq 0 ] || [[ "${test_suites[@]}" =~ "${num##0}" ]]
+if should_execute ${num##0} ${test_suites[@]}
 then
 	pipex_test $PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "grep Now" "wc -w" "outs/test-$num.txt" > outs/test-$num-tty.txt 2>&1
 	status_code=$?
@@ -844,7 +860,7 @@ printf "$PROJECT_DIRECTORY/pipex \"assets/deepthought.txt\" \"wc -w\" \"cat\" \"
 num=$(echo "$num 1" | awk '{printf "%02d", $1 + $2}')
 description="The program handles the command"
 printf "${BLUE}# $num: %-69s  []${NC}" "$description"
-if [ ${#test_suites[@]} -eq 0 ] || [[ "${test_suites[@]}" =~ "${num##0}" ]]
+if should_execute ${num##0} ${test_suites[@]}
 then
 	pipex_test $PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "grep Now" "cat" "outs/test-$num.txt" > outs/test-$num.0-tty.txt 2>&1
 	status_code=$?
@@ -878,7 +894,7 @@ fi
 num=$(echo "$num 1" | awk '{printf "%02d", $1 + $2}')
 description="The output of the command is correct"
 printf "${BLUE}# $num: %-69s  []${NC}" "$description"
-if [ ${#test_suites[@]} -eq 0 ] || [[ "${test_suites[@]}" =~ "${num##0}" ]]
+if should_execute ${num##0} ${test_suites[@]}
 then
 	pipex_test $PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "grep Now" "cat" "outs/test-$num.txt" > outs/test-$num.0-tty.txt 2>&1
 	status_code=$?
@@ -921,7 +937,7 @@ printf "${ULINE}(notexisting is a command that is not supposed to exist)${NC}\n\
 num=$(echo "$num 1" | awk '{printf "%02d", $1 + $2}')
 description="The program handles the command"
 printf "${BLUE}# $num: %-69s  []${NC}" "$description"
-if [ ${#test_suites[@]} -eq 0 ] || [[ "${test_suites[@]}" =~ "${num##0}" ]]
+if should_execute ${num##0} ${test_suites[@]}
 then
 	pipex_test $PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "notexisting" "wc" "outs/test-$num.txt" > outs/test-$num-tty.txt 2>&1
 	status_code=$?
@@ -959,7 +975,7 @@ fi
 num=$(echo "$num 1" | awk '{printf "%02d", $1 + $2}')
 description="The output of the command contains 'command not found'"
 printf "${BLUE}# $num: %-69s  []${NC}" "$description"
-if [ ${#test_suites[@]} -eq 0 ] || [[ "${test_suites[@]}" =~ "${num##0}" ]]
+if should_execute ${num##0} ${test_suites[@]}
 then
 	pipex_test $PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "notexisting" "wc" "outs/test-$num.txt" > outs/test-$num-tty.txt 2>&1
 	status_code=$?
@@ -993,7 +1009,7 @@ fi
 num=$(echo "$num 1" | awk '{printf "%02d", $1 + $2}')
 description="The output of the command is correct"
 printf "${BLUE}# $num: %-69s  []${NC}" "$description"
-if [ ${#test_suites[@]} -eq 0 ] || [[ "${test_suites[@]}" =~ "${num##0}" ]]
+if should_execute ${num##0} ${test_suites[@]}
 then
 	pipex_test $PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "notexisting" "wc" "outs/test-$num.txt" > outs/test-$num-tty.txt 2>&1
 	status_code=$?
@@ -1033,7 +1049,7 @@ printf "${ULINE}(notexisting is a command that is not supposed to exist)${NC}\n\
 num=$(echo "$num 1" | awk '{printf "%02d", $1 + $2}')
 description="The program exits with the right status code"
 printf "${BLUE}# $num: %-69s  []${NC}" "$description"
-if [ ${#test_suites[@]} -eq 0 ] || [[ "${test_suites[@]}" =~ "${num##0}" ]]
+if should_execute ${num##0} ${test_suites[@]}
 then
 	pipex_test $PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "cat" "notexisting" "outs/test-$num.txt" > outs/test-$num-tty.txt 2>&1
 	status_code=$?
@@ -1071,7 +1087,7 @@ fi
 num=$(echo "$num 1" | awk '{printf "%02d", $1 + $2}')
 description="The output of the command contains 'command not found'"
 printf "${BLUE}# $num: %-69s  []${NC}" "$description"
-if [ ${#test_suites[@]} -eq 0 ] || [[ "${test_suites[@]}" =~ "${num##0}" ]]
+if should_execute ${num##0} ${test_suites[@]}
 then
 	pipex_test $PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "cat" "notexisting" "outs/test-$num.txt" > outs/test-$num-tty.txt 2>&1
 	status_code=$?
@@ -1105,7 +1121,7 @@ fi
 num=$(echo "$num 1" | awk '{printf "%02d", $1 + $2}')
 description="The output of the command is correct"
 printf "${BLUE}# $num: %-69s  []${NC}" "$description"
-if [ ${#test_suites[@]} -eq 0 ] || [[ "${test_suites[@]}" =~ "${num##0}" ]]
+if should_execute ${num##0} ${test_suites[@]}
 then
 	pipex_test $PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "cat" "notexisting" "outs/test-$num.txt" > outs/test-$num-tty.txt 2>&1
 	status_code=$?
@@ -1144,7 +1160,7 @@ printf "$PROJECT_DIRECTORY/pipex \"/dev/urandom\" \"cat\" \"head -1\" \"outs/tes
 num=$(echo "$num 1" | awk '{printf "%02d", $1 + $2}')
 description="The program does not timeout"
 printf "${BLUE}# $num: %-69s  []${NC}" "$description"
-if [ ${#test_suites[@]} -eq 0 ] || [[ "${test_suites[@]}" =~ "${num##0}" ]]
+if should_execute ${num##0} ${test_suites[@]}
 then
 	pipex_test $PROJECT_DIRECTORY/pipex "/dev/urandom" "cat" "head -1" "outs/test-$num.txt" > outs/test-$num-tty.txt 2>&1
 	status_code=$?
