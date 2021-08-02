@@ -1154,6 +1154,76 @@ fi
 # **************************************************************************** #
 
 printf "\n${ULINE}The next tests will use the following command:${NC}\n"
+printf "$PROJECT_DIRECTORY/pipex \"assets/deepthought.txt\" \"grep Now\" \"/usr/bin/cat\" \"outs/test-xx.txt\"\n"
+
+# TEST
+num=$(echo "$num 1" | awk '{printf "%02d", $1 + $2}')
+description="The program exits with the right status code"
+printf "${BLUE}# $num: %-69s  []${NC}" "$description"
+if should_execute ${num##0} ${test_suites[@]}
+then
+	pipex_test $PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "grep Now" "/usr/bin/cat" "outs/test-$num.txt" > outs/test-$num-tty.txt 2>&1
+	status_code=$?
+	if [ $status_code -le 128 ] # 128 is the last code that bash uses before signals
+	then
+		TESTS_OK=$(($TESTS_OK + 1))
+		result="OK"
+		if [ $status_code -eq 0 ]
+		then
+			result_color=$GREEN
+		else
+			result_color=$YELLOW
+		fi
+	else
+		if [ $status_code -eq 143 ]
+		then
+			TESTS_TO=$(($TESTS_TO + 1))
+			result="TO"
+		else
+			TESTS_KO=$(($TESTS_KO + 1))
+			result="KO"
+		fi
+		result_color=$RED
+	fi
+	printf "\r${result_color}# $num: %-69s [%s]\n${NC}" "$description" "$result"
+else
+	printf "\n"
+fi
+
+# TEST
+num=$(echo "$num 1" | awk '{printf "%02d", $1 + $2}')
+description="The output of the command is correct"
+printf "${BLUE}# $num: %-69s  []${NC}" "$description"
+if should_execute ${num##0} ${test_suites[@]}
+then
+	pipex_test $PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "grep Now" "/usr/bin/cat" "outs/test-$num.txt" > outs/test-$num-tty.txt 2>&1
+	status_code=$?
+	< assets/deepthought.txt grep Now | /usr/bin/cat > outs/test-$num-original.txt 2>&1
+	if diff outs/test-$num-original.txt outs/test-$num.txt > /dev/null 2>&1 && [ $status_code -ne 143 ]
+	then
+		TESTS_OK=$(($TESTS_OK + 1))
+		result="OK"
+		result_color=$GREEN
+	else
+		if [ $status_code -eq 143 ]
+		then
+			TESTS_TO=$(($TESTS_TO + 1))
+			result="TO"
+			result_color=$RED
+		else
+			TESTS_OK=$(($TESTS_OK + 1))
+			result="OK"
+			result_color=$YELLOW
+		fi
+	fi
+	printf "\r${result_color}# $num: %-69s [%s]\n${NC}" "$description" "$result"
+else
+	printf "\n"
+fi
+
+# **************************************************************************** #
+
+printf "\n${ULINE}The next tests will use the following command:${NC}\n"
 printf "$PROJECT_DIRECTORY/pipex \"/dev/urandom\" \"cat\" \"head -1\" \"outs/test-xx.txt\"\n\n"
 
 # TEST
