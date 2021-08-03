@@ -431,11 +431,16 @@ if should_execute ${num##0} ${test_suites[@]}
 then
 	pipex_test $PROJECT_DIRECTORY/pipex "not-existing/deepthought.txt" "grep Now" "wc -w" "outs/test-$num.txt" > outs/test-$num-tty.txt 2>&1
 	status_code=$?
-	if [ $status_code -eq 0 ]
+	if [ $status_code -le 128 ] # 128 is the last code that bash uses before signals
 	then
 		TESTS_OK=$(($TESTS_OK + 1))
 		result="OK"
-		result_color=$GREEN
+		if [ $status_code -eq 0 ]
+		then
+			result_color=$GREEN
+		else
+			result_color=$YELLOW
+		fi
 	else
 		if [ $status_code -eq 143 ]
 		then
@@ -465,11 +470,16 @@ then
 	pipex_test $PROJECT_DIRECTORY/pipex "not-existing/deepthought.txt" "grep Now" "wc -w" "outs/test-$num.txt" > outs/test-$num-tty.txt 2>&1
 	status_code=$?
 	< /dev/null grep Now | wc -w > outs/test-$num-original.txt 2>&1
-	if diff outs/test-$num-original.txt outs/test-$num.txt > /dev/null 2>&1 && [ $status_code -ne 143 ]
+	if [ $status_code -le 128 ]
 	then
 		TESTS_OK=$(($TESTS_OK + 1))
 		result="OK"
-		result_color=$GREEN
+		if diff outs/test-$num-original.txt outs/test-$num.txt > /dev/null 2>&1
+		then
+			result_color=$GREEN
+		else
+			result_color=$YELLOW
+		fi
 	else
 		if [ $status_code -eq 143 ]
 		then
@@ -575,11 +585,16 @@ if should_execute ${num##0} ${test_suites[@]}
 then
 	PATH=/not/existing:$PATH pipex_test $PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "grep Now" "wc -w" "outs/test-$num.txt" > outs/test-$num-tty.txt 2>&1
 	status_code=$?
-	if [ $status_code -eq 0 ]
+	if [ $status_code -le 128 ] # 128 is the last code that bash uses before signals
 	then
 		TESTS_OK=$(($TESTS_OK + 1))
 		result="OK"
-		result_color=$GREEN
+		if [ $status_code -eq 0 ]
+		then
+			result_color=$GREEN
+		else
+			result_color=$YELLOW
+		fi
 	else
 		if [ $status_code -eq 143 ]
 		then
@@ -609,7 +624,7 @@ then
 	PATH=$PWD/assets:$PATH VAR1="hello" VAR2="world" pipex_test $PROJECT_DIRECTORY/pipex "/dev/null" "env_var" "cat" "outs/test-$num.txt" > outs/test-$num-tty.txt 2>&1
 	status_code=$?
 	VAR1="hello" VAR2="world" ./assets/env_var > outs/test-$num-original.txt 2>&1
-	if diff outs/test-$num-original.txt outs/test-$num.txt > /dev/null 2>&1 && [ $status_code -ne 143 ]
+	if diff outs/test-$num-original.txt outs/test-$num.txt > /dev/null 2>&1 && [ $status_code -le 128 ] # 128 is the last code that bash uses before signals
 	then
 		TESTS_OK=$(($TESTS_OK + 1))
 		result="OK"
@@ -680,7 +695,7 @@ then
 	pipex_test $PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "cat" "ls" "outs/test-$num.txt" > outs/test-$num-tty.txt 2>&1
 	status_code=$?
 	< assets/deepthought.txt cat | ls > outs/test-$num-original.txt 2>&1
-	if diff outs/test-$num-original.txt outs/test-$num.txt > /dev/null 2>&1 && [ $status_code -ne 143 ]
+	if diff outs/test-$num-original.txt outs/test-$num.txt > /dev/null 2>&1 && [ $status_code -le 128 ]
 	then
 		TESTS_OK=$(($TESTS_OK + 1))
 		result="OK"
@@ -752,7 +767,7 @@ then
 	pipex_test $PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "grep Now" "head -2" "outs/test-$num.txt" > outs/test-$num-tty.txt 2>&1
 	status_code=$?
 	< assets/deepthought.txt grep Now | head -2 > outs/test-$num-original.txt 2>&1
-	if diff outs/test-$num-original.txt outs/test-$num.txt > /dev/null 2>&1 && [ $status_code -ne 143 ]
+	if diff outs/test-$num-original.txt outs/test-$num.txt > /dev/null 2>&1 && [ $status_code -le 128 ]
 	then
 		TESTS_OK=$(($TESTS_OK + 1))
 		result="OK"
@@ -824,7 +839,7 @@ then
 	pipex_test $PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "grep Now" "wc -w" "outs/test-$num.txt" > outs/test-$num-tty.txt 2>&1
 	status_code=$?
 	< assets/deepthought.txt grep Now | wc -w > outs/test-$num-original.txt 2>&1
-	if diff outs/test-$num-original.txt outs/test-$num.txt > /dev/null 2>&1 && [ $status_code -ne 143 ]
+	if diff outs/test-$num-original.txt outs/test-$num.txt > /dev/null 2>&1 && [ $status_code -le 128 ]
 	then
 		TESTS_OK=$(($TESTS_OK + 1))
 		result="OK"
@@ -902,7 +917,7 @@ then
 	status_code2=$?
 	< assets/deepthought.txt grep Now | cat > outs/test-$num-original.txt
 	< assets/deepthought.txt wc -w | cat > outs/test-$num-original.txt
-	if diff outs/test-$num-original.txt outs/test-$num.txt > /dev/null 2>&1 && [ $status_code -ne 143 ] && [ $status_code2 -ne 143 ]
+	if diff outs/test-$num-original.txt outs/test-$num.txt > /dev/null 2>&1 && [ $status_code -le 128 ] && [ $status_code2 -le 128 ]
 	then
 		TESTS_OK=$(($TESTS_OK + 1))
 		result="OK"
@@ -979,7 +994,7 @@ if should_execute ${num##0} ${test_suites[@]}
 then
 	pipex_test $PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "notexisting" "wc" "outs/test-$num.txt" > outs/test-$num-tty.txt 2>&1
 	status_code=$?
-	if grep "command not found" outs/test-$num-tty.txt > /dev/null 2>&1 && [ $status_code -ne 143 ]
+	if grep "command not found" outs/test-$num-tty.txt > /dev/null 2>&1 && [ $status_code -le 128 ]
 	then
 		TESTS_OK=$(($TESTS_OK + 1))
 		result="OK"
@@ -1014,7 +1029,7 @@ then
 	pipex_test $PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "notexisting" "wc" "outs/test-$num.txt" > outs/test-$num-tty.txt 2>&1
 	status_code=$?
 	< /dev/null cat | wc > outs/test-$num-original.txt 2>&1
-	if diff outs/test-$num-original.txt outs/test-$num.txt > /dev/null 2>&1 && [ $status_code -ne 143 ]
+	if diff outs/test-$num-original.txt outs/test-$num.txt > /dev/null 2>&1 && [ $status_code -le 128 ]
 	then
 		TESTS_OK=$(($TESTS_OK + 1))
 		result="OK"
@@ -1091,7 +1106,7 @@ if should_execute ${num##0} ${test_suites[@]}
 then
 	pipex_test $PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "cat" "notexisting" "outs/test-$num.txt" > outs/test-$num-tty.txt 2>&1
 	status_code=$?
-	if grep "command not found" outs/test-$num-tty.txt > /dev/null 2>&1 && [ $status_code -ne 143 ]
+	if grep "command not found" outs/test-$num-tty.txt > /dev/null 2>&1 && [ $status_code -le 128 ]
 	then
 		TESTS_OK=$(($TESTS_OK + 1))
 		result="OK"
@@ -1126,7 +1141,7 @@ then
 	pipex_test $PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "cat" "notexisting" "outs/test-$num.txt" > outs/test-$num-tty.txt 2>&1
 	status_code=$?
 	< assets/deepthought.txt cat | cat /dev/null > outs/test-$num-original.txt 2>&1
-	if diff outs/test-$num-original.txt outs/test-$num.txt > /dev/null 2>&1 && [ $status_code -ne 143 ]
+	if diff outs/test-$num-original.txt outs/test-$num.txt > /dev/null 2>&1 && [ $status_code -le 128 ]
 	then
 		TESTS_OK=$(($TESTS_OK + 1))
 		result="OK"
@@ -1179,6 +1194,10 @@ then
 		then
 			TESTS_TO=$(($TESTS_TO + 1))
 			result="TO"
+		elif [ $status_code -eq $LEAK_RETURN ]
+		then
+			TESTS_LK=$(($TESTS_LK + 1))
+			result="LK"
 		else
 			TESTS_KO=$(($TESTS_KO + 1))
 			result="KO"
@@ -1199,7 +1218,7 @@ then
 	pipex_test $PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "grep Now" "/usr/bin/cat" "outs/test-$num.txt" > outs/test-$num-tty.txt 2>&1
 	status_code=$?
 	< assets/deepthought.txt grep Now | /usr/bin/cat > outs/test-$num-original.txt 2>&1
-	if diff outs/test-$num-original.txt outs/test-$num.txt > /dev/null 2>&1 && [ $status_code -ne 143 ]
+	if diff outs/test-$num-original.txt outs/test-$num.txt > /dev/null 2>&1 && [ $status_code -le 128 ]
 	then
 		TESTS_OK=$(($TESTS_OK + 1))
 		result="OK"
@@ -1210,6 +1229,10 @@ then
 			TESTS_TO=$(($TESTS_TO + 1))
 			result="TO"
 			result_color=$RED
+		elif [ $status_code -eq $LEAK_RETURN ]
+		then
+			TESTS_LK=$(($TESTS_LK + 1))
+			result="LK"
 		else
 			TESTS_OK=$(($TESTS_OK + 1))
 			result="OK"
@@ -1223,7 +1246,7 @@ fi
 
 # **************************************************************************** #
 
-printf "\n${ULINE}The next tests will use the following command:${NC}\n"
+printf "\n${ULINE}The next test will use the following command:${NC}\n"
 printf "$PROJECT_DIRECTORY/pipex \"/dev/urandom\" \"cat\" \"head -1\" \"outs/test-xx.txt\"\n\n"
 
 # TEST
