@@ -245,7 +245,7 @@ then
 	pipex_test $PROJECT_DIRECTORY/pipex > outs/test-$num-tty.txt 2>&1
 	status_code=$?
 	echo "Exit status: $status_code`[ $status_code -eq $LEAK_RETURN ] && printf " (Leak special exit code)"`" > outs/test-$num-exit.txt
-	if [ $status_code -le 128 ] # 128 is the last code that bash uses before signals
+	if [ $status_code -le 126 ] # 126 is the last code that bash uses before signals
 	then
 		TESTS_OK=$(($TESTS_OK + 1))
 		result="OK"
@@ -284,7 +284,7 @@ then
 	pipex_test $PROJECT_DIRECTORY/pipex "assets/deepthought.txt" > outs/test-$num-tty.txt 2>&1
 	status_code=$?
 	echo "Exit status: $status_code`[ $status_code -eq $LEAK_RETURN ] && printf " (Leak special exit code)"`" > outs/test-$num-exit.txt
-	if [ $status_code -le 128 ] # 128 is the last code that bash uses before signals
+	if [ $status_code -le 126 ] # 126 is the last code that bash uses before signals
 	then
 		TESTS_OK=$(($TESTS_OK + 1))
 		result="OK"
@@ -323,7 +323,7 @@ then
 	pipex_test $PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "grep Now" > outs/test-$num-tty.txt 2>&1
 	status_code=$?
 	echo "Exit status: $status_code`[ $status_code -eq $LEAK_RETURN ] && printf " (Leak special exit code)"`" > outs/test-$num-exit.txt
-	if [ $status_code -le 128 ] # 128 is the last code that bash uses before signals
+	if [ $status_code -le 126 ] # 126 is the last code that bash uses before signals
 	then
 		TESTS_OK=$(($TESTS_OK + 1))
 		result="OK"
@@ -362,7 +362,7 @@ then
 	pipex_test $PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "grep Now" "wc -w" > outs/test-$num-tty.txt 2>&1
 	status_code=$?
 	echo "Exit status: $status_code`[ $status_code -eq $LEAK_RETURN ] && printf " (Leak special exit code)"`" > outs/test-$num-exit.txt
-	if [ $status_code -le 128 ] # 128 is the last code that bash uses before signals
+	if [ $status_code -le 126 ] # 126 is the last code that bash uses before signals
 	then
 		TESTS_OK=$(($TESTS_OK + 1))
 		result="OK"
@@ -399,7 +399,7 @@ printf "${BLUE}# $num: %-69s  []${NC}" "$description"
 if should_execute ${num##0} ${test_suites[@]}
 then
 	PATH=$PWD/assets:$PATH pipex_test $PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "grep Now" "exit 5" "outs/test-$num.txt" > outs/test-$num-tty.txt 2>&1
-	if [ $status_code -le 128 ] # 128 is the last code that bash uses before signals
+	if [ $status_code -le 126 ] # 126 is the last code that bash uses before signals
 	then
 		TESTS_OK=$(($TESTS_OK + 1))
 		result="OK"
@@ -438,7 +438,7 @@ then
 	pipex_test $PROJECT_DIRECTORY/pipex "not-existing/deepthought.txt" "grep Now" "wc -w" "outs/test-$num.txt" > outs/test-$num-tty.txt 2>&1
 	status_code=$?
 	echo "Exit status: $status_code`[ $status_code -eq $LEAK_RETURN ] && printf " (Leak special exit code)"`" > outs/test-$num-exit.txt
-	if [ $status_code -le 128 ] # 128 is the last code that bash uses before signals
+	if [ $status_code -le 126 ] # 126 is the last code that bash uses before signals
 	then
 		TESTS_OK=$(($TESTS_OK + 1))
 		result="OK"
@@ -478,7 +478,7 @@ then
 	status_code=$?
 	echo "Exit status: $status_code`[ $status_code -eq $LEAK_RETURN ] && printf " (Leak special exit code)"`" > outs/test-$num-exit.txt
 	< /dev/null grep Now | wc -w > outs/test-$num-original.txt 2>&1
-	if [ $status_code -le 128 ]
+	if [ $status_code -le 126 ]
 	then
 		TESTS_OK=$(($TESTS_OK + 1))
 		result="OK"
@@ -517,7 +517,7 @@ then
 	pipex_test $PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "grep Now" "wc -w" "not-existing/test-$num.txt" > outs/test-$num-tty.txt 2>&1
 	status_code=$?
 	echo "Exit status: $status_code`[ $status_code -eq $LEAK_RETURN ] && printf " (Leak special exit code)"`" > outs/test-$num-exit.txt
-	if [ $status_code -le 128 ] # 128 is the last code that bash uses before signals
+	if [ $status_code -le 126 ] # 126 is the last code that bash uses before signals
 	then
 		TESTS_OK=$(($TESTS_OK + 1))
 		result="OK"
@@ -557,7 +557,7 @@ then
 	PATH=$PWD/assets:$PATH pipex_test $PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "cat" "not-executable" "outs/test-$num.txt" > outs/test-$num-tty.txt 2>&1
 	status_code=$?
 	echo "Exit status: $status_code`[ $status_code -eq $LEAK_RETURN ] && printf " (Leak special exit code)"`" > outs/test-$num-exit.txt
-	if [ $status_code -le 128 ] # 128 is the last code that bash uses before signals
+	if [ $status_code -le 126 ] # 126 is the last code that bash uses before signals
 	then
 		TESTS_OK=$(($TESTS_OK + 1))
 		result="OK"
@@ -596,7 +596,7 @@ then
 	PATH=/not/existing:$PATH pipex_test $PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "grep Now" "wc -w" "outs/test-$num.txt" > outs/test-$num-tty.txt 2>&1
 	status_code=$?
 	echo "Exit status: $status_code`[ $status_code -eq $LEAK_RETURN ] && printf " (Leak special exit code)"`" > outs/test-$num-exit.txt
-	if [ $status_code -le 128 ] # 128 is the last code that bash uses before signals
+	if [ $status_code -le 126 ] # 126 is the last code that bash uses before signals
 	then
 		TESTS_OK=$(($TESTS_OK + 1))
 		result="OK"
@@ -636,7 +636,7 @@ then
 	status_code=$?
 	echo "Exit status: $status_code`[ $status_code -eq $LEAK_RETURN ] && printf " (Leak special exit code)"`" > outs/test-$num-exit.txt
 	VAR1="hello" VAR2="world" ./assets/env_var > outs/test-$num-original.txt 2>&1
-	if diff outs/test-$num-original.txt outs/test-$num.txt > /dev/null 2>&1 && [ $status_code -le 128 ] # 128 is the last code that bash uses before signals
+	if diff outs/test-$num-original.txt outs/test-$num.txt > /dev/null 2>&1 && [ $status_code -le 126 ] # 126 is the last code that bash uses before signals
 	then
 		TESTS_OK=$(($TESTS_OK + 1))
 		result="OK"
@@ -709,7 +709,7 @@ then
 	status_code=$?
 	echo "Exit status: $status_code`[ $status_code -eq $LEAK_RETURN ] && printf " (Leak special exit code)"`" > outs/test-$num-exit.txt
 	< assets/deepthought.txt cat | ls > outs/test-$num-original.txt 2>&1
-	if diff outs/test-$num-original.txt outs/test-$num.txt > /dev/null 2>&1 && [ $status_code -le 128 ]
+	if diff outs/test-$num-original.txt outs/test-$num.txt > /dev/null 2>&1 && [ $status_code -le 126 ]
 	then
 		TESTS_OK=$(($TESTS_OK + 1))
 		result="OK"
@@ -783,7 +783,7 @@ then
 	status_code=$?
 	echo "Exit status: $status_code`[ $status_code -eq $LEAK_RETURN ] && printf " (Leak special exit code)"`" > outs/test-$num-exit.txt
 	< assets/deepthought.txt grep Now | head -2 > outs/test-$num-original.txt 2>&1
-	if diff outs/test-$num-original.txt outs/test-$num.txt > /dev/null 2>&1 && [ $status_code -le 128 ]
+	if diff outs/test-$num-original.txt outs/test-$num.txt > /dev/null 2>&1 && [ $status_code -le 126 ]
 	then
 		TESTS_OK=$(($TESTS_OK + 1))
 		result="OK"
@@ -857,7 +857,7 @@ then
 	status_code=$?
 	echo "Exit status: $status_code`[ $status_code -eq $LEAK_RETURN ] && printf " (Leak special exit code)"`" > outs/test-$num-exit.txt
 	< assets/deepthought.txt grep Now | wc -w > outs/test-$num-original.txt 2>&1
-	if diff outs/test-$num-original.txt outs/test-$num.txt > /dev/null 2>&1 && [ $status_code -le 128 ]
+	if diff outs/test-$num-original.txt outs/test-$num.txt > /dev/null 2>&1 && [ $status_code -le 126 ]
 	then
 		TESTS_OK=$(($TESTS_OK + 1))
 		result="OK"
@@ -937,7 +937,7 @@ then
 	status_code2=$?
 	< assets/deepthought.txt grep Now | cat > outs/test-$num-original.txt
 	< assets/deepthought.txt wc -w | cat > outs/test-$num-original.txt
-	if diff outs/test-$num-original.txt outs/test-$num.txt > /dev/null 2>&1 && [ $status_code -le 128 ] && [ $status_code2 -le 128 ]
+	if diff outs/test-$num-original.txt outs/test-$num.txt > /dev/null 2>&1 && [ $status_code -le 126 ] && [ $status_code2 -le 126 ]
 	then
 		TESTS_OK=$(($TESTS_OK + 1))
 		result="OK"
@@ -977,7 +977,7 @@ then
 	pipex_test $PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "notexisting" "wc" "outs/test-$num.txt" > outs/test-$num-tty.txt 2>&1
 	status_code=$?
 	echo "Exit status: $status_code`[ $status_code -eq $LEAK_RETURN ] && printf " (Leak special exit code)"`" > outs/test-$num-exit.txt
-	if [ $status_code -le 128 ] # 128 is the last code that bash uses before signals
+	if [ $status_code -le 126 ] # 126 is the last code that bash uses before signals
 	then
 		TESTS_OK=$(($TESTS_OK + 1))
 		result="OK"
@@ -1016,7 +1016,7 @@ then
 	pipex_test $PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "notexisting" "wc" "outs/test-$num.txt" > outs/test-$num-tty.txt 2>&1
 	status_code=$?
 	echo "Exit status: $status_code`[ $status_code -eq $LEAK_RETURN ] && printf " (Leak special exit code)"`" > outs/test-$num-exit.txt
-	if grep "command not found" outs/test-$num-tty.txt > /dev/null 2>&1 && [ $status_code -le 128 ]
+	if grep "command not found" outs/test-$num-tty.txt > /dev/null 2>&1 && [ $status_code -le 126 ]
 	then
 		TESTS_OK=$(($TESTS_OK + 1))
 		result="OK"
@@ -1052,7 +1052,7 @@ then
 	status_code=$?
 	echo "Exit status: $status_code`[ $status_code -eq $LEAK_RETURN ] && printf " (Leak special exit code)"`" > outs/test-$num-exit.txt
 	< /dev/null cat | wc > outs/test-$num-original.txt 2>&1
-	if diff outs/test-$num-original.txt outs/test-$num.txt > /dev/null 2>&1 && [ $status_code -le 128 ]
+	if diff outs/test-$num-original.txt outs/test-$num.txt > /dev/null 2>&1 && [ $status_code -le 126 ]
 	then
 		TESTS_OK=$(($TESTS_OK + 1))
 		result="OK"
@@ -1092,7 +1092,7 @@ then
 	pipex_test $PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "cat" "notexisting" "outs/test-$num.txt" > outs/test-$num-tty.txt 2>&1
 	status_code=$?
 	echo "Exit status: $status_code`[ $status_code -eq $LEAK_RETURN ] && printf " (Leak special exit code)"`" > outs/test-$num-exit.txt
-	if [ $status_code -le 128 ] # 128 is the last code that bash uses before signals
+	if [ $status_code -le 126 ] # 126 is the last code that bash uses before signals
 	then
 		TESTS_OK=$(($TESTS_OK + 1))
 		result="OK"
@@ -1131,7 +1131,7 @@ then
 	pipex_test $PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "cat" "notexisting" "outs/test-$num.txt" > outs/test-$num-tty.txt 2>&1
 	status_code=$?
 	echo "Exit status: $status_code`[ $status_code -eq $LEAK_RETURN ] && printf " (Leak special exit code)"`" > outs/test-$num-exit.txt
-	if grep "command not found" outs/test-$num-tty.txt > /dev/null 2>&1 && [ $status_code -le 128 ]
+	if grep "command not found" outs/test-$num-tty.txt > /dev/null 2>&1 && [ $status_code -le 126 ]
 	then
 		TESTS_OK=$(($TESTS_OK + 1))
 		result="OK"
@@ -1167,7 +1167,7 @@ then
 	status_code=$?
 	echo "Exit status: $status_code`[ $status_code -eq $LEAK_RETURN ] && printf " (Leak special exit code)"`" > outs/test-$num-exit.txt
 	< assets/deepthought.txt cat | cat /dev/null > outs/test-$num-original.txt 2>&1
-	if diff outs/test-$num-original.txt outs/test-$num.txt > /dev/null 2>&1 && [ $status_code -le 128 ]
+	if diff outs/test-$num-original.txt outs/test-$num.txt > /dev/null 2>&1 && [ $status_code -le 126 ]
 	then
 		TESTS_OK=$(($TESTS_OK + 1))
 		result="OK"
@@ -1206,7 +1206,7 @@ then
 	pipex_test $PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "grep Now" "/usr/bin/cat" "outs/test-$num.txt" > outs/test-$num-tty.txt 2>&1
 	status_code=$?
 	echo "Exit status: $status_code`[ $status_code -eq $LEAK_RETURN ] && printf " (Leak special exit code)"`" > outs/test-$num-exit.txt
-	if [ $status_code -le 128 ] # 128 is the last code that bash uses before signals
+	if [ $status_code -le 126 ] # 126 is the last code that bash uses before signals
 	then
 		TESTS_OK=$(($TESTS_OK + 1))
 		result="OK"
@@ -1246,7 +1246,7 @@ then
 	status_code=$?
 	echo "Exit status: $status_code`[ $status_code -eq $LEAK_RETURN ] && printf " (Leak special exit code)"`" > outs/test-$num-exit.txt
 	< assets/deepthought.txt grep Now | /usr/bin/cat > outs/test-$num-original.txt 2>&1
-	if diff outs/test-$num-original.txt outs/test-$num.txt > /dev/null 2>&1 && [ $status_code -le 128 ]
+	if diff outs/test-$num-original.txt outs/test-$num.txt > /dev/null 2>&1 && [ $status_code -le 126 ]
 	then
 		TESTS_OK=$(($TESTS_OK + 1))
 		result="OK"
