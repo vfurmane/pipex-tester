@@ -29,6 +29,7 @@ The logs are stored in the `outs` directory. You'll find three types of file:
 - `test-xx.txt`: this is the outfile of pipex.
 - `test-xx-original.txt`: this is the outfile we would get with bash.
 - `test-xx-tty.txt`: this is what your program writes (`stdout` and `stderr`)
+- `test-xx-exit.txt`: this is the exit code of your program
 
 You may find files like that `test-xx.x.txt`. These are log files for command executed twice during the same test.
 
