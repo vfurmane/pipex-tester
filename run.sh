@@ -56,6 +56,7 @@ CONFIG=0
 LEAKS=1
 READ_CONFIG=1
 UPDATE=0
+VERBOSE=0
 
 source scripts/config.sh
 
@@ -73,7 +74,7 @@ source scripts/update.sh
 cat assets/banner.txt
 
 # Parse arguments
-while getopts ":cltu" opt
+while getopts ":cltuv" opt
 do
 	case $opt in
 		c)
@@ -84,6 +85,8 @@ do
 			DISABLE_TIMEOUT=1;;
 		u)
 			UPDATE=1;;
+		v)
+			VERBOSE=1;;
 		*)
 			break;;
 	esac
@@ -180,6 +183,13 @@ then
 else
 	printf "\n"
 fi
+if [ $VERBOSE -gt 0 ] && ([ "$result" != "OK" ] || [ "$result_color" != "$GREEN" ])
+then
+	[ -f outs/test-$num.txt ] && cat outs/test-$num.txt 
+	[ -f outs/test-$num-original.txt ] && cat outs/test-$num-original.txt 
+	[ -f outs/test-$num-tty.txt ] && cat outs/test-$num-tty.txt 
+	[ -f outs/test-$num-exit.txt ] && cat outs/test-$num-exit.txt 
+fi
 
 # TEST
 num=$(echo "$num 1" | awk '{printf "%02d", $1 + $2}')
@@ -201,6 +211,7 @@ then
 else
 	printf "\n"
 fi
+pipex_verbose
 
 # TEST
 num=$(echo "$num 1" | awk '{printf "%02d", $1 + $2}')
@@ -225,6 +236,7 @@ then
 else
 	printf "\n"
 fi
+pipex_verbose
 
 # TEST
 num=$(echo "$num 1" | awk '{printf "%02d", $1 + $2}')
@@ -264,6 +276,7 @@ then
 else
 	printf "\n"
 fi
+pipex_verbose
 
 # TEST
 num=$(echo "$num 1" | awk '{printf "%02d", $1 + $2}')
@@ -302,6 +315,13 @@ then
 	printf "\r${result_color}# $num: %-69s [%s]\n${NC}" "$description" "$result"
 else
 	printf "\n"
+fi
+if [ $VERBOSE -gt 0 ] && ([ "$result" != "OK" ] || [ "$result_color" != "$GREEN" ])
+then
+	[ -f outs/test-$num.txt ] && cat outs/test-$num.txt 
+	[ -f outs/test-$num-original.txt ] && cat outs/test-$num-original.txt 
+	[ -f outs/test-$num-tty.txt ] && cat outs/test-$num-tty.txt 
+	[ -f outs/test-$num-exit.txt ] && cat outs/test-$num-exit.txt 
 fi
 
 # TEST
@@ -342,6 +362,7 @@ then
 else
 	printf "\n"
 fi
+pipex_verbose
 
 # TEST
 num=$(echo "$num 1" | awk '{printf "%02d", $1 + $2}')
@@ -381,6 +402,7 @@ then
 else
 	printf "\n"
 fi
+pipex_verbose
 
 # TEST
 num=$(echo "$num 1" | awk '{printf "%02d", $1 + $2}')
@@ -418,6 +440,7 @@ then
 else
 	printf "\n"
 fi
+pipex_verbose
 
 # TEST
 num=$(echo "$num 1" | awk '{printf "%02d", $1 + $2}')
@@ -457,6 +480,7 @@ then
 else
 	printf "\n"
 fi
+pipex_verbose
 
 # TEST
 num=$(echo "$num 1" | awk '{printf "%02d", $1 + $2}')
@@ -497,6 +521,7 @@ then
 else
 	printf "\n"
 fi
+pipex_verbose
 
 # TEST
 num=$(echo "$num 1" | awk '{printf "%02d", $1 + $2}')
@@ -536,6 +561,7 @@ then
 else
 	printf "\n"
 fi
+pipex_verbose
 
 # TEST
 num=$(echo "$num 1" | awk '{printf "%02d", $1 + $2}')
@@ -576,6 +602,7 @@ then
 else
 	printf "\n"
 fi
+pipex_verbose
 
 # TEST
 num=$(echo "$num 1" | awk '{printf "%02d", $1 + $2}')
@@ -615,6 +642,7 @@ then
 else
 	printf "\n"
 fi
+pipex_verbose
 
 # TEST
 num=$(echo "$num 1" | awk '{printf "%02d", $1 + $2}')
@@ -650,6 +678,7 @@ then
 else
 	printf "\n"
 fi
+pipex_verbose
 
 # **************************************************************************** #
 
@@ -689,6 +718,8 @@ then
 else
 	printf "\n"
 fi
+pipex_verbose
+
 # TEST
 num=$(echo "$num 1" | awk '{printf "%02d", $1 + $2}')
 description="The output of the command is correct"
@@ -723,6 +754,7 @@ then
 else
 	printf "\n"
 fi
+pipex_verbose
 
 # **************************************************************************** #
 
@@ -762,6 +794,7 @@ then
 else
 	printf "\n"
 fi
+pipex_verbose
 
 # TEST
 num=$(echo "$num 1" | awk '{printf "%02d", $1 + $2}')
@@ -797,6 +830,7 @@ then
 else
 	printf "\n"
 fi
+pipex_verbose
 
 # **************************************************************************** #
 
@@ -836,6 +870,7 @@ then
 else
 	printf "\n"
 fi
+pipex_verbose
 
 # TEST
 num=$(echo "$num 1" | awk '{printf "%02d", $1 + $2}')
@@ -871,6 +906,7 @@ then
 else
 	printf "\n"
 fi
+pipex_verbose
 
 # **************************************************************************** #
 
@@ -915,6 +951,7 @@ then
 else
 	printf "\n"
 fi
+pipex_verbose
 
 # TEST
 num=$(echo "$num 1" | awk '{printf "%02d", $1 + $2}')
@@ -954,6 +991,7 @@ then
 else
 	printf "\n"
 fi
+pipex_verbose
 
 # **************************************************************************** #
 
@@ -999,6 +1037,7 @@ then
 else
 	printf "\n"
 fi
+pipex_verbose
 
 # TEST
 num=$(echo "$num 1" | awk '{printf "%02d", $1 + $2}')
@@ -1034,6 +1073,7 @@ then
 else
 	printf "\n"
 fi
+pipex_verbose
 
 # TEST
 num=$(echo "$num 1" | awk '{printf "%02d", $1 + $2}')
@@ -1069,6 +1109,7 @@ then
 else
 	printf "\n"
 fi
+pipex_verbose
 
 # **************************************************************************** #
 
@@ -1114,6 +1155,7 @@ then
 else
 	printf "\n"
 fi
+pipex_verbose
 
 # TEST
 num=$(echo "$num 1" | awk '{printf "%02d", $1 + $2}')
@@ -1149,6 +1191,7 @@ then
 else
 	printf "\n"
 fi
+pipex_verbose
 
 # TEST
 num=$(echo "$num 1" | awk '{printf "%02d", $1 + $2}')
@@ -1184,6 +1227,7 @@ then
 else
 	printf "\n"
 fi
+pipex_verbose
 
 # **************************************************************************** #
 
@@ -1228,6 +1272,7 @@ then
 else
 	printf "\n"
 fi
+pipex_verbose
 
 # TEST
 num=$(echo "$num 1" | awk '{printf "%02d", $1 + $2}')
@@ -1264,6 +1309,7 @@ then
 else
 	printf "\n"
 fi
+pipex_verbose
 
 # **************************************************************************** #
 
@@ -1303,5 +1349,6 @@ then
 else
 	printf "\n"
 fi
+pipex_verbose
 
 pipex_summary

@@ -24,6 +24,17 @@ pipex_test()
 	return $status_code
 }
 
+pipex_verbose()
+{
+	if [ $VERBOSE -gt 0 ] && ([ "$result" != "OK" ] || [ "$result_color" != "$GREEN" ])
+	then
+		[ -f outs/test-$num.txt ] && echo "Your pipex:" && cat outs/test-$num.txt 
+		[ -f outs/test-$num-original.txt ] && echo "Bash:" && cat outs/test-$num-original.txt 
+		[ -f outs/test-$num-tty.txt ] && echo "Your tty output:" && cat outs/test-$num-tty.txt 
+		[ -f outs/test-$num-exit.txt ] && echo "Your exit status:" && cat outs/test-$num-exit.txt 
+	fi
+}
+
 pipex_summary()
 {
 	exec 1>&3
