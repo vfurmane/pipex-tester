@@ -70,14 +70,7 @@ source scripts/test_utils.sh
 
 source scripts/update.sh
 
-printf "+------------------------------------------------------------------------------+\n"
-printf "|                                                                              |\n"
-printf "|                                                                              |\n"
-printf "|                           ${ULINE}${MAGENTA}PIPEX TESTER${NC} by ${YELLOW}vfurmane${NC}                           |\n"
-printf "|                                                                              |\n"
-printf "|                                                                              |\n"
-printf "+------------------------------------------------------------------------------+\n"
-printf "\n\n"
+cat assets/banner.txt
 
 # Parse arguments
 while [ $# -gt 0 ]
