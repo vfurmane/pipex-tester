@@ -49,7 +49,7 @@ Run the specified tests.
 ./run.sh 1 2 3
 ```
 
-#### -c | --config
+#### -c
 
 Allow you to reconfigure the tester.
 
@@ -57,7 +57,7 @@ Allow you to reconfigure the tester.
 ./run.sh -c
 ```
 
-#### -l | --no-leaks
+#### -l
 
 Disable the leaks tests.
 
@@ -65,7 +65,7 @@ Disable the leaks tests.
 ./run.sh -l
 ```
 
-#### -t | --disable-timeout
+#### -t
 
 Disable the timeout tests. May run the tests faster.
 
@@ -73,7 +73,7 @@ Disable the timeout tests. May run the tests faster.
 ./run.sh -t
 ```
 
-#### -u | --update
+#### -u
 
 Force the tester to update (if needed only).
 

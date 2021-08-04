@@ -73,25 +73,22 @@ source scripts/update.sh
 cat assets/banner.txt
 
 # Parse arguments
-while [ $# -gt 0 ]
+while getopts ":cltu" opt
 do
-	case $1 in
-		-c|--config)
-			CONFIG=1
-		shift;;
-		-l|--no-leaks)
-			LEAKS=0
-		shift;;
-		-t|--disable-timeout)
-			DISABLE_TIMEOUT=1
-		shift;;
-		-u|--update)
-			UPDATE=1
-		shift;;
+	case $opt in
+		c)
+			CONFIG=1;;
+		l)
+			LEAKS=0;;
+		t)
+			DISABLE_TIMEOUT=1;;
+		u)
+			UPDATE=1;;
 		*)
-		break;;
+			break;;
 	esac
 done
+shift $((OPTIND-1))
 
 MEMLEAKS=""
 LEAK_RETURN=240
