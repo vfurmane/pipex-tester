@@ -1232,7 +1232,7 @@ pipex_verbose
 # **************************************************************************** #
 
 printf "\n${ULINE}The next tests will use the following command:${NC}\n"
-printf "$PROJECT_DIRECTORY/pipex \"assets/deepthought.txt\" \"grep Now\" \"/usr/bin/cat\" \"outs/test-xx.txt\"\n"
+printf "$PROJECT_DIRECTORY/pipex \"assets/deepthought.txt\" \"grep Now\" \"$(which cat)\" \"outs/test-xx.txt\"\n"
 
 # TEST
 num=$(echo "$num 1" | awk '{printf "%02d", $1 + $2}')
@@ -1240,7 +1240,7 @@ description="The program exits with the right status code"
 printf "${BLUE}# $num: %-69s  []${NC}" "$description"
 if should_execute ${num##0} ${test_suites[@]}
 then
-	pipex_test $PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "grep Now" "/usr/bin/cat" "outs/test-$num.txt" > outs/test-$num-tty.txt 2>&1
+	pipex_test $PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "grep Now" "$(which cat)" "outs/test-$num.txt" > outs/test-$num-tty.txt 2>&1
 	status_code=$?
 	echo -e "Exit status: $status_code`[ $status_code -eq $LEAK_RETURN ] && printf " (Leak special exit code)"`\nExpected: <126" > outs/test-$num-exit.txt
 	if [ $status_code -lt 126 ] # 126 is the last code that bash uses before signals
@@ -1280,10 +1280,10 @@ description="The output of the command is correct"
 printf "${BLUE}# $num: %-69s  []${NC}" "$description"
 if should_execute ${num##0} ${test_suites[@]}
 then
-	pipex_test $PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "grep Now" "/usr/bin/cat" "outs/test-$num.txt" > outs/test-$num-tty.txt 2>&1
+	pipex_test $PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "grep Now" "$(which cat)" "outs/test-$num.txt" > outs/test-$num-tty.txt 2>&1
 	status_code=$?
 	echo -e "Exit status: $status_code`[ $status_code -eq $LEAK_RETURN ] && printf " (Leak special exit code)"`\nExpected: <126" > outs/test-$num-exit.txt
-	< assets/deepthought.txt grep Now | /usr/bin/cat > outs/test-$num-original.txt 2>&1
+	< assets/deepthought.txt grep Now | $(which cat) > outs/test-$num-original.txt 2>&1
 	if diff outs/test-$num-original.txt outs/test-$num.txt > /dev/null 2>&1 && [ $status_code -lt 126 ]
 	then
 		TESTS_OK=$(($TESTS_OK + 1))
