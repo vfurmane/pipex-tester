@@ -44,7 +44,7 @@ function should_execute()
 	return 1
 }
 
-commands_needed=("awk" "sleep" "date" "awk" "dirname" "touch" "chmod" "ping" "git" "mkdir" "make" "nm" "grep" "wc" "cat" "ls" "head")
+commands_needed=("awk" "sleep" "date" "awk" "dirname" "touch" "chmod" "ping" "git" "mkdir" "make" "nm" "grep" "wc" "cat" "hostname" "head")
 for command_needed in "${commands_needed[@]}"
 do
 	command -v $command_needed > /dev/null 2>&1 || fatal_error "'$command_needed' command not installed... Aborting."
