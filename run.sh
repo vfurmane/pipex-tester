@@ -1048,7 +1048,7 @@ then
 	pipex_test $PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "notexisting" "wc" "outs/test-$num.txt" > outs/test-$num-tty.txt 2>&1
 	status_code=$?
 	echo -e "Exit status: $status_code`[ $status_code -eq $LEAK_RETURN ] && printf " (Leak special exit code)"`\nExpected: <128" > outs/test-$num-exit.txt
-	if grep "command not found" outs/test-$num-tty.txt > /dev/null 2>&1 && [ $status_code -lt 128 ]
+	if grep -i "command not found" outs/test-$num-tty.txt > /dev/null 2>&1 && [ $status_code -lt 128 ]
 	then
 		TESTS_OK=$(($TESTS_OK + 1))
 		result="OK"
@@ -1166,7 +1166,7 @@ then
 	pipex_test $PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "cat" "notexisting" "outs/test-$num.txt" > outs/test-$num-tty.txt 2>&1
 	status_code=$?
 	echo -e "Exit status: $status_code`[ $status_code -eq $LEAK_RETURN ] && printf " (Leak special exit code)"`\nExpected: <128" > outs/test-$num-exit.txt
-	if grep "command not found" outs/test-$num-tty.txt > /dev/null 2>&1 && [ $status_code -lt 128 ]
+	if grep -i "command not found" outs/test-$num-tty.txt > /dev/null 2>&1 && [ $status_code -lt 128 ]
 	then
 		TESTS_OK=$(($TESTS_OK + 1))
 		result="OK"
