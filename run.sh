@@ -411,6 +411,7 @@ printf "${BLUE}# $num: %-69s  []${NC}" "$description"
 if should_execute ${num##0} ${test_suites[@]}
 then
 	PATH=$PWD/assets:$PATH pipex_test $PROJECT_DIRECTORY/pipex "assets/deepthought.txt" "grep Now" "exit 5" "outs/test-$num.txt" > outs/test-$num-tty.txt 2>&1
+	status_code=$?
 	if [ $status_code -lt 128 ] # 128 is the last code that bash uses before signals
 	then
 		TESTS_OK=$(($TESTS_OK + 1))
